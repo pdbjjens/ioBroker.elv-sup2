@@ -1,0 +1,98 @@
+{
+	"common": {
+		"name": "elv-sup2",
+		"version": "0.0.1",
+		"news": {
+			"0.0.1": {
+				"en": "initial release",
+				"de": "Erstveröffentlichung",
+				"ru": "Начальная версия",
+				"pt": "lançamento inicial",
+				"nl": "Eerste uitgave",
+				"fr": "Première version",
+				"it": "Versione iniziale",
+				"es": "Versión inicial",
+				"pl": "Pierwsze wydanie",
+				"zh-cn": "首次出版"
+			}
+		},
+		"title": "ELV SUP2",
+		"titleLang": {
+			"en": "ELV SUP2",
+			"de": "ELV SUP2",
+			"ru": "ЭЛВ СУП2",
+			"pt": "ELV SUP2",
+			"nl": "ELV SUP2",
+			"fr": "VHU SUP2",
+			"it": "ELV SUP2",
+			"es": "ELV SUP2",
+			"pl": "ELV SUP2",
+			"zh-cn": "低电压 SUP2"
+		},
+		"desc": {
+			"en": "Connects ELV SUP2 to ioBroker",
+			"de": "Verbindet ELV SUP2 mit ioBroker",
+			"ru": "Подключает ELV SUP2 к ioBroker",
+			"pt": "Conecta ELV SUP2 ao ioBroker",
+			"nl": "Verbindt ELV SUP2 met ioBroker",
+			"fr": "Connecte ELV SUP2 à ioBroker",
+			"it": "Collega ELV SUP2 a ioBroker",
+			"es": "Conecta ELV SUP2 a ioBroker",
+			"pl": "Łączy ELV SUP2 z ioBroker",
+			"zh-cn": "将 ELV SUP2 连接到 ioBroker"
+		},
+		"authors": [
+			"pdbjjens <jjensen@t-online.de>"
+		],
+		"keywords": [
+			"ELV SUP2"
+		],
+		"license": "MIT",
+		"platform": "Javascript/Node.js",
+		"main": "main.js",
+		"icon": "elv-sup2.png",
+		"enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/pdbjjens/ioBroker.elv-sup2/main/admin/elv-sup2.png",
+		"readme": "https://github.com/pdbjjens/ioBroker.elv-sup2/blob/main/README.md",
+		"loglevel": "info",
+		"mode": "daemon",
+		"type": "multimedia",
+		"compact": true,
+		"connectionType": "local",
+		"dataSource": "poll",
+		"materialize": true,
+		"dependencies": [
+			{
+				"js-controller": ">=2.0.0"
+			}
+		]
+	},
+	"native": {
+		"option1": true,
+		"option2": "42"
+	},
+	"objects": [],
+	"instanceObjects": [
+		{
+			"_id": "info",
+			"type": "channel",
+			"common": {
+				"name": "Information"
+			},
+			"native": {}
+		},
+		{
+			"_id": "info.connection",
+			"type": "state",
+			"common": {
+				"role": "indicator.connected",
+				"name": "Device or service connected",
+				"type": "boolean",
+				"read": true,
+				"write": false,
+				"def": false
+			},
+			"native": {}
+		}
+	]
+}
