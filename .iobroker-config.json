@@ -1,0 +1,7 @@
+{
+  "ioBrokerUrl": "http://localhost",
+  "socketIoPort": 8181,
+  "scriptRoot": "/",
+  "adminVersion": "admin4",
+  "allowSelfSignedCertificate": false
+}

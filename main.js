@@ -7,9 +7,54 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
+const Sup = require('./lib/sup.js');
 
 // Load your modules here, e.g.:
 // const fs = require("fs");
+
+
+let SerialPort;
+let sup ={};
+const objects   = {};
+const tasks = [];
+let connectTimeout;
+let checkConnectionTimer;
+let timeoutId;
+
+//SUP parameters which are not included in response message
+const supControl = {
+	FREQ: 88.5,
+	RDST: 'First text',
+	TA: false,
+	TP: false,
+	MUTE: false,
+	RF: true,
+};
+/*
+// SUP2 command list
+// https://files2.elv.com/public/09/0910/091048/Internet/91048_sup2_bedienhinweise.pdf
+const commands = {
+	get: 'GET',
+	inpl: 'INPL',
+	lim: 'LIM',
+	inpm: 'INPM',
+	freq: 'FREQ',
+	adev: 'ADEV',
+	pow: 'POW',
+	pree: 'PREE',
+	rds: 'RDS',
+	rdsy: 'RDSY',
+	rdsp: 'RDSP',
+	ta: 'TA',
+	tp: 'TP',
+	mute: 'MUTE',
+	rf: 'RF',
+	rdst: 'RDST'
+};
+*/
+
+const serialformat = /^(COM|com)[0-9][0-9]?$|^\/dev\/tty.*$/;
+
 
 class ElvSup2 extends utils.Adapter {
 
@@ -28,49 +73,136 @@ class ElvSup2 extends utils.Adapter {
 		this.on('unload', this.onUnload.bind(this));
 	}
 
+
 	/**
 	 * Is called when databases are connected and adapter received configuration.
 	 */
 	async onReady() {
 		// Initialize your adapter here
 
+		try {
+			SerialPort = require('serialport').SerialPort;
+		} catch (err) {
+			this.log.warn('serialport module is not available');
+			if (this.supportsFeature && !this.supportsFeature('CONTROLLER_NPM_AUTO_REBUILD')) {
+				// re throw error to allow rebuild of serialport in js-controller 3.0.18+
+				throw err;
+			}
+		}
+
 		// Reset the connection indicator during startup
 		this.setState('info.connection', false, true);
+		let error;
+		this.checkPort(err => {
+			error = err;
+			if (!err) {
+				this.connect();
+			} else {
+				this.log.error('Cannot open port: ' + err);
+			}
+		});
+		if (!error) await this.subscribeStatesAsync('Config.*');
+	}
 
-		// The adapters config (in the instance object everything under the attribute "native") is accessible via
-		// this.config:
-		this.log.info('config option1: ' + this.config.option1);
-		this.log.info('config option2: ' + this.config.option2);
 
-		/*
-		For every state in the system there has to be also an object of type state
-		Here a simple template for a boolean variable named "testVariable"
-		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-		*/
-		await this.setObjectNotExistsAsync('testVariable', {
-			type: 'state',
-			common: {
-				name: 'testVariable',
-				type: 'boolean',
-				role: 'indicator',
-				read: true,
-				write: true,
-			},
-			native: {},
+	// check if serial port is available
+	checkPort(callback) {
+
+		if (!this.config.connectionIdentifier) {
+			callback && callback('Serial port is not selected');
+			return;
+		}
+		if (!this.config.connectionIdentifier.match(serialformat)) {
+			callback && callback('Serial port ID not valid. Should be like /dev/tty.usbserial or COM9');
+			return;
+		}
+		let sPort;
+		try {
+			sPort = new SerialPort({
+				path: this.config.connectionIdentifier || 'COM8',
+				baudRate: parseInt(this.config.baudrate, 10) || 19200,
+				autoOpen: false
+			});
+
+			sPort.on('error', err => {
+				sPort.isOpen && sPort.close();
+				this.log.debug('Checkport Error: ' + err);
+				callback && callback(err);
+				callback = null;
+			});
+
+			sPort.open(err => {
+				sPort.isOpen && sPort.close();
+				if (err) this.log.debug('Checkport open and closed: ' + err);
+				callback && callback(err);
+				callback = null;
+			});
+
+		} catch (e) {
+			this.log.error('Cannot open port: ' + e);
+			try {
+				sPort.isOpen && sPort.close();
+			} catch (ee) {
+				this.log.error('Cannot close port: ' + ee);
+			}
+			callback && callback(e);
+		}
+
+	}
+
+
+	// connect to SUP via serial port
+	connect(callback) {
+		const options = {
+			connectionMode: 'serial' ,
+			serialport: this.config.connectionIdentifier || 'COM8',
+			baudrate:   parseInt(this.config.baudrate, 10) || 19200,
+			databits: 8,
+			stopbits: 1,
+			parity: 'even',
+			//debug:      false,
+			parse:       true,
+			logger:     this.log.debug
+		};
+
+		sup = new Sup(options);
+
+
+		sup.on('close', () => {
+			this.setState('info.connection', false, true);
+			sup.close();
+			connectTimeout = setTimeout(() => {
+				connectTimeout = null;
+				//sup = null;
+				this.connect();
+			}, 10000);
 		});
 
-		// In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-		this.subscribeStates('testVariable');
-		// You can also add a subscription for multiple states. The following line watches all states starting with "lights."
-		// this.subscribeStates('lights.*');
-		// Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-		// this.subscribeStates('*');
+		sup.on('ready', () => {
+			this.setState('info.connection', true, true);
+			this.log.info('SUP connected: ' +  JSON.stringify(options));
+			this.initObjects();
+			typeof callback === 'function' && callback();
+		});
 
-		/*
+		sup.on('error', err =>
+			this.log.error('Error on sup connection: ' +  err));
+
+	}
+
+
+	// In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
+	//this.subscribeStates('testVariable');
+	// You can also add a subscription for multiple states. The following line watches all states starting with "lights."
+	// this.subscribeStates('lights.*');
+	// Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
+	// this.subscribeStates('*');
+
+	/*
 			setState examples
 			you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
 		*/
-		// the variable testVariable is set to true as command (ack=false)
+	/*// the variable testVariable is set to true as command (ack=false)
 		await this.setStateAsync('testVariable', true);
 
 		// same thing, but the value is flagged "ack"
@@ -86,24 +218,31 @@ class ElvSup2 extends utils.Adapter {
 
 		result = await this.checkGroupAsync('admin', 'admin');
 		this.log.info('check group user admin group admin: ' + result);
-	}
+	*/
 
 	/**
 	 * Is called when adapter shuts down - callback has to be called under any circumstances!
 	 * @param {() => void} callback
 	 */
-	onUnload(callback) {
-		try {
-			// Here you must clear all timeouts or intervals that may still be active
-			// clearTimeout(timeout1);
-			// clearTimeout(timeout2);
-			// ...
-			// clearInterval(interval1);
+	async onUnload(callback) {
+		connectTimeout && clearTimeout(connectTimeout);
+		connectTimeout = null;
 
-			callback();
-		} catch (e) {
-			callback();
+		checkConnectionTimer && clearTimeout(checkConnectionTimer);
+		checkConnectionTimer = null;
+
+		timeoutId && clearTimeout(timeoutId);
+		timeoutId = null;
+
+		if (sup) {
+			try {
+				await sup.close();
+				//sup = null;
+			} catch (e) {
+				this.log.error('Cannot close serial port: ' + e.toString());
+			}
 		}
+		callback();
 	}
 
 	// If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
@@ -128,15 +267,579 @@ class ElvSup2 extends utils.Adapter {
 	 * @param {string} id
 	 * @param {ioBroker.State | null | undefined} state
 	 */
-	onStateChange(id, state) {
-		if (state) {
-			// The state was changed
-			this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-		} else {
-			// The state was deleted
-			this.log.info(`state ${id} deleted`);
+	async onStateChange(id, state) {
+
+		if (state && !state.ack) {
+			this.log.debug('State Change ' + JSON.stringify(id) + ', State: ' + JSON.stringify(state));
+			//  State Change "elv-sup2.0.Config.inpl" State: {"val":100,"ack":false,"ts":1581365531968,"q":0,"from":"system.adapter.admin.0","user":"system.user.admin","lc":1581365531968}
+			const oCmnd = id.split('.');
+			if (oCmnd.length < 4) {
+				this.log.error('Invalid object id');
+				return;
+			}
+			// 0: elv-sup2; 1:0; 2:Config; 3:inpl;
+			let supCommand = '';
+			if (oCmnd[2] === 'Config') {
+				switch (oCmnd[3]) {
+					case 'INPL':
+						supCommand = '*'+ 'INPL:' + state.val + '\n';
+						break;
+					case 'LIM':
+						supCommand = '*'+ 'LIM:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+						break;
+					case 'INPM':
+						supCommand = '*'+ 'INPM:' + (state.val.toString().substring(0,1)==='A' ? 'ANALOG' : 'DIGITAL') + '\n';
+						break;
+					case 'FREQ':
+						supCommand = '*'+ 'FREQ:' + state.val*100 + '\n';
+						break;
+					case 'ADEV':
+						supCommand = '*'+ 'ADEV:' + state.val*100 + '\n';
+						break;
+					case 'POW':
+						supCommand = '*'+ 'POW:' + state.val + '\n';
+						break;
+					case 'PREE':
+						state.val = (state.val <= 49 ? 0 : (state.val <= 74 ? 50 : (state.val === 75 ? 75 : 50)));
+						supCommand = '*'+ 'PREE:' + state.val + '\n';
+						break;
+					case 'RDS':
+						supCommand = '*'+ 'RDS:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+						break;
+					case 'RDSY':
+						supCommand = '*'+ 'RDSY:' + state.val + '\n';
+						break;
+					case 'RDSP':
+						supCommand = '*'+ 'RDSP:' + state.val + '\n';
+						break;
+					case 'TA':
+						supCommand = '*'+ 'TA:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+						break;
+					case 'TP':
+						supCommand = '*'+ 'TP:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+						break;
+					case 'MUTE':
+						supCommand = '*'+ 'MUTE:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+						break;
+					case 'RF':
+						supCommand = '*'+ 'RF:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+						break;
+					case 'RDST':
+						supCommand = '*'+ 'RDST:' + state.val.toString().padEnd(32) + '\n';
+						break;
+
+					default:
+						this.log.error(`Write of State ${oCmnd[3]} not implemented`);
+						break;
+
+				}
+				try {
+					const ack = await this.sendCommand (supCommand);
+					if (ack === '*A') {
+						await this.setStateAsync (id , state.val, true);
+					} else {
+						this.log.error('Unknown acknowledge from SUP2');
+					}
+				} catch (err) {
+					this.log.error('Error in sendCommand: ' + err.toString());
+				}
+			} else {
+				this.log.error('Unknown SUP2 parameter');
+			}
 		}
 	}
+
+
+	waitForData () {
+		return new Promise((resolve, reject) => {
+			timeoutId = setTimeout(() => reject('Command Write Timeout'), 2000);
+
+			sup.once('data', (data) => {
+				clearTimeout(timeoutId);
+				//this.log.debug('Response to Send command: ' + data);
+				resolve(data);
+			});
+		});
+	}
+
+	/***
+ * Send a command to the sup module and return response
+ * sendCommand("*INPL:20\n");
+* response: "*A" || '{"VERS":11,"FRE1":8850,"FRE2":8751,"FRE3":8752,"POW":118,"INPM":"ANALOG","INPL":18,"PREE":50,"ADEV":9000,"LIM":"ON","RDS":"ON","RDSP":"NDR KULTNDR KULT","RDSY":13,}'
+ *
+ */
+	sendCommand(cmd) {
+		return new Promise((resolve, reject) => {
+			this.log.debug('Send command: ' + cmd);
+
+			sup.write(cmd, err => {
+				if (!err) {
+					this.waitForData().then(
+						result => {
+							this.log.debug('Response to Send command: ' + result);
+							resolve(result);
+						},
+						error => {
+							this.log.error('Timeout waiting for response: ' + error);
+							reject(error);
+						});
+				} else {
+					this.log.error('Cannot write to port: ' + err);
+					reject(err);
+
+				}
+
+			});
+		});
+	}
+
+
+
+	/***
+ * Send a command to the sup module
+ * sendRaw("*INPL:20\n");
+ *
+
+	async sendRaw(cmd) {
+		//
+		this.log.info('Send RAW command received. ' + cmd);
+		//sup.write('*INPL:20\n'); // Raw command
+		await sup.write(cmd);
+	}
+*/
+
+	async initObjects() {
+		let response = '';
+
+		try {
+			response = await this.sendCommand('*GET:\n');
+			//this.log.debug('In initObjects: ' + response);
+			if (response !== '*A') {
+				const id = 'Config';
+				const supConfig = JSON.parse(response);
+				//isStart = !tasks.length;
+				if (!objects[this.namespace + '.' + id]) {
+					//create new channel
+					const newChannel = {
+						_id:    this.namespace + '.' + id,
+						type:   'channel',
+						common: {
+							name: 'SUP2 Configuration'
+						},
+						native: supConfig
+					};
+					objects[this.namespace + '.' + id] = newChannel;
+					tasks.push({type: 'object', id: newChannel._id, obj: newChannel});
+					this.log.debug(`channel object  ${newChannel._id} pushed`);
+
+					//create new state objects from SUP2 response
+					let common;
+					for (const _state in supConfig) {
+						switch(_state) {
+							case 'VERS':
+								common = {
+									name: 'SW Version',
+									type: 'string',
+									role: 'text',
+									unit: '',
+									read: true,
+									write: false
+								};
+								break;
+							case 'FRE1':
+								common = {
+									name: 'Preset Frequency 1',
+									type: 'number',
+									role: 'value',
+									unit: 'MHz',
+									min: 87.50,
+									max: 108.00,
+									read: true,
+									write: false
+								};
+								break;
+							case 'FRE2':
+								common = {
+									name: 'Preset Frequency 2',
+									type: 'number',
+									role: 'value',
+									unit: 'MHz',
+									min: 87.50,
+									max: 108.00,
+									read: true,
+									write: false
+								};
+								break;
+							case 'FRE3':
+								common = {
+									name: 'Preset Frequency 3',
+									type: 'number',
+									role: 'value',
+									unit: 'MHz',
+									min: 87.50,
+									max: 108.00,
+									read: true,
+									write: false
+								};
+								break;
+							case 'POW':
+								common = {
+									name: 'Output Power',
+									type: 'number',
+									role: 'power.level',
+									unit: 'dB',
+									min: 88,
+									max: 118,
+									read: true,
+									write: true
+								};
+								break;
+							case 'INPL':
+								common = {
+									name: 'Input Level',
+									type: 'number',
+									role: 'level.input',
+									unit: '%',
+									min: 0,
+									max: 100,
+									read: true,
+									write: true
+								};
+								break;
+							case 'PREE':
+								common = {
+									name: 'Preemphasis',
+									type: 'number',
+									role: 'value',
+									unit: 'uS',
+									min: 0,
+									max: 75,
+									read: true,
+									write: true
+								};
+								break;
+							case 'ADEV':
+								common = {
+									name: 'Audio Deviation',
+									type: 'number',
+									role: 'value',
+									unit: 'kHz',
+									min: 0.00,
+									max: 90.00,
+									read: true,
+									write: true
+								};
+								break;
+							case 'LIM':
+								common = {
+									name: 'Limiter',
+									type: 'boolean',
+									role: 'indicator',
+									read: true,
+									write: true
+								};
+								break;
+							case 'RDS':
+								common = {
+									name: 'RDS On/Off',
+									type: 'boolean',
+									role: 'indicator',
+									read: true,
+									write: true
+								};
+								break;
+							case 'INPM':
+								common = {
+									name: 'Input Mode',
+									type: 'string',
+									role: 'indicator',
+									read: true,
+									write: true
+								};
+								break;
+							case 'RDSP':
+								common = {
+									name: 'RDS Program Name',
+									type: 'string',
+									role: 'text',
+									read: true,
+									write: true
+								};
+								break;
+							case 'RDST':
+								common = {
+									name: 'RDS Text',
+									type: 'string',
+									role: 'text',
+									read: true,
+									write: true
+								};
+								break;
+							case 'RDSY':
+								common = {
+									name: 'RDS Program Type',
+									type: 'number',
+									role: 'value',
+									unit: '',
+									min: 0,
+									max: 31,
+									read: true,
+									write: true
+								};
+								break;
+							default:
+								this.log.error('Unknown sup configuration parameter: ' + _state);
+								break;
+						}
+						const newState = {
+							_id:    `${this.namespace}.${id}.${_state}`,
+							type:   'state',
+							common: common,
+							native: {}
+						};
+
+						objects[`${this.namespace}.${id}.${_state}`] = newState;
+						tasks.push({type: 'object', id: newState._id, obj: newState});
+						this.log.debug(`state object  ${newState._id} pushed`);
+
+					}
+
+					//create new state objects which are not in SUP2 response
+					for (const key in supControl) {
+						switch(key) {
+							case 'FREQ':
+								common = {
+									name: 'Frequency',
+									type: 'number',
+									role: 'value',
+									unit: 'MHz',
+									min: 87.50,
+									max: 108.00,
+									read: true,
+									write: true
+								};
+								break;
+							case 'RDST':
+								common = {
+									name: 'RDS Text',
+									type: 'string',
+									role: 'text',
+									unit: '',
+									read: true,
+									write: true
+								};
+								break;
+							case 'TA':
+								common = {
+									name: 'TA On/Off',
+									type: 'boolean',
+									role: 'indicator',
+									read: true,
+									write: true
+								};
+								break;
+							case 'TP':
+								common = {
+									name: 'TP On/Off',
+									type: 'boolean',
+									role: 'indicator',
+									read: true,
+									write: true
+								};
+								break;
+							case 'MUTE':
+								common = {
+									name: 'Mute On/Off',
+									type: 'boolean',
+									role: 'indicator',
+									read: true,
+									write: true
+								};
+								break;
+							case 'RF':
+								common = {
+									name: 'RF On/Off',
+									type: 'boolean',
+									role: 'indicator',
+									read: true,
+									write: true
+								};
+								break;
+							default:
+								this.log.error('Unknown sup control parameter: ' + key);
+								break;
+						}
+
+						const newState = {
+							_id:    `${this.namespace}.${id}.${key}`,
+							type:   'state',
+							common: common,
+							native: {}
+						};
+
+						objects[`${this.namespace}.${id}.${key}`] = newState;
+						tasks.push({type: 'object', id: newState._id, obj: newState});
+						this.log.debug(`state object  ${newState._id} pushed`);
+
+
+					}
+					await this.processTasks();
+					await this.setStates(supConfig);
+					await this.setStates(supControl);
+					await this.processTasks();
+				}
+			}
+		} catch (err) {
+			this.log.error('Error in sendCommand: ' + err.toString());
+		}
+	}
+
+
+
+	async processTasks() {
+		// Set states or create objects
+		while (tasks.length) {
+			const task = tasks.shift();
+
+			if (task.type === 'state') {
+				try {
+					await this.setForeignStateAsync(task.id, task.val, true);
+					this.log.info(`state ${task.id} set with value ${task.val}`);
+				} catch (err) {
+					this.log.error('Unexpected error - ' + err);
+				}
+			} else if (task.type === 'object') {
+				try {
+					const obj = await this.getForeignObjectAsync(task.id);
+					if (!obj) { //object does not exist - create it!
+						try {
+							await this.setForeignObjectAsync(task.id, task.obj);
+							this.log.info(`object ${task.id} created`);
+						} catch (err) {
+							this.log.error('Unexpected error - ' + err);
+						}
+					} else { //check if object changed tbd.
+						//let changed = false;
+						/*if (JSON.stringify(obj.native) !== JSON.stringify(task.obj.native)) {
+							obj.native = task.obj.native;
+							changed = true;
+						}
+
+						if (changed) {
+							try {
+								await this.setForeignObjectAsync(obj._id, obj);
+								this.log.info(`object ${this.namespace}.${obj._id} created`);
+								setImmediate(this.processTasks);
+							} catch (err) {
+								this.log.error('Unexpected error - ' + err);
+							}
+*/
+						//} else {
+
+						//this.log.info('Object created - ' + JSON.stringify(obj));
+						//setImmediateAsync(this.processTasks);
+						//}
+
+					}
+				} catch (error) {
+					this.log.error('Unexpected error - ' + JSON.stringify(error));
+				}
+			}
+		}
+	}
+
+
+	async setStates(obj) {
+		// Set all state values according to SUP2 response received
+		const id = 'Config';
+		//const isStart = !tasks.length;
+
+		const supConfig = obj;
+		let value;
+		for (const state in obj) {
+			const oid  = this.namespace + '.' + id + '.' + state;
+			//this.log.info(`state ${state} with value ${obj.state} to be checked`);
+			switch(state) {
+				case 'VERS':
+					supConfig[state] = supConfig.VERS.toString().replace(/(?<=^.{1})/, '.');
+					value = supConfig.VERS;
+					break;
+				case 'FRE1':
+					supConfig[state] = supConfig.FRE1/100;
+					value = supConfig.FRE1;
+					break;
+				case 'FRE2':
+					supConfig[state] = supConfig.FRE2/100;
+					value = supConfig.FRE2;
+					break;
+				case 'FRE3':
+					supConfig[state] = supConfig.FRE3/100;
+					value = supConfig.FRE3;
+					break;
+				case 'POW':
+				//supConfig[state] = supConfig.POW;
+					value = supConfig.POW;
+					break;
+				case 'INPL':
+				//supConfig[state] = supConfig.INPL;
+					value = supConfig.INPL;
+					break;
+				case 'PREE':
+				//supConfig[state] = supConfig.PREE;
+					value = supConfig.PREE;
+					break;
+				case 'ADEV':
+					supConfig[state] = supConfig.ADEV/100;
+					value = supConfig.ADEV;
+					break;
+				case 'LIM':
+					supConfig[state] = supConfig.LIM === 'ON' ? true : false;
+					value = supConfig.LIM;
+					break;
+				case 'RDS':
+					supConfig[state] = supConfig.RDS === 'ON' ? true : false;
+					value = supConfig.RDS;
+					break;
+				case 'INPM':
+					supConfig[state] = supConfig.INPM === 'ANALOG'? 'Analog' : 'Digital';
+					value = supConfig.INPM;
+					break;
+				case 'RDSP':
+				//supConfig[state] = supConfig.RDSP;
+					value = supConfig.RDSP;
+					break;
+				case 'RDST':
+				//supConfig[state] = supConfig.RDST;
+					value = supConfig.RDST;
+					break;
+				case 'RDSY':
+				//supConfig[state] = supConfig.RDSY;
+					value = supConfig.RDSY;
+					break;
+				case 'FREQ':
+					value = supConfig.FREQ;
+					break;
+				case 'TA':
+					value = supConfig.TA;
+					break;
+				case 'TP':
+					value = supConfig.TP;
+					break;
+				case 'MUTE':
+					value = supConfig.MUTE;
+					break;
+				case 'RF':
+					value = supConfig.RF;
+					break;
+				default:
+					this.log.error('Unknown sup configuration state: ' + state);
+					break;
+			}
+			tasks.push({type: 'state', id: oid, val: value});
+			this.log.debug(`state ${oid} pushed with value ${value}`);
+		}
+	}
+
 
 	// If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
 	// /**
@@ -155,7 +858,6 @@ class ElvSup2 extends utils.Adapter {
 	// 		}
 	// 	}
 	// }
-
 }
 
 if (require.main !== module) {

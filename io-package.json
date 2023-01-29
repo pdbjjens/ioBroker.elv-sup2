@@ -23,7 +23,7 @@
 			"ru": "ЭЛВ СУП2",
 			"pt": "ELV SUP2",
 			"nl": "ELV SUP2",
-			"fr": "VHU SUP2",
+			"fr": "ELV SUP2",
 			"it": "ELV SUP2",
 			"es": "ELV SUP2",
 			"pl": "ELV SUP2",
@@ -45,7 +45,8 @@
 			"pdbjjens <jjensen@t-online.de>"
 		],
 		"keywords": [
-			"ELV SUP2"
+			"ELV", 
+			"SUP2"
 		],
 		"license": "MIT",
 		"platform": "Javascript/Node.js",
@@ -68,8 +69,8 @@
 		]
 	},
 	"native": {
-		"option1": true,
-		"option2": "42"
+		"connectionIdentifier": "COM8",
+		"baudrate": "19200"
 	},
 	"objects": [],
 	"instanceObjects": [

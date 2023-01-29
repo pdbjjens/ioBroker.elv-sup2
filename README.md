@@ -5,7 +5,6 @@
 [![Downloads](https://img.shields.io/npm/dm/iobroker.elv-sup2.svg)](https://www.npmjs.com/package/iobroker.elv-sup2)
 ![Number of Installations](https://iobroker.live/badges/elv-sup2-installed.svg)
 ![Current version in stable repository](https://iobroker.live/badges/elv-sup2-stable.svg)
-[![Dependency Status](https://img.shields.io/david/pdbjjens/iobroker.elv-sup2.svg)](https://david-dm.org/pdbjjens/iobroker.elv-sup2)
 
 [![NPM](https://nodei.co/npm/iobroker.elv-sup2.png?downloads=true)](https://nodei.co/npm/iobroker.elv-sup2/)
 
@@ -13,7 +12,7 @@
 
 ## elv-sup2 adapter for ioBroker
 
-Connects ELV SUP2 to ioBroker
+This adapter connects the ELV HQ-Stereo-FM-Testgenerator SUP2 to ioBroker via USB serial port. It allows to retrieve and set certain configuration parameters of the testgenerator among them the RDS text, RDS program name and type. SUP2 updating is not supported. Use the Windows program which is provided by ELV for this purpose.
 
 ## Developer manual
 This section is intended for the developer. It can be deleted later
@@ -95,6 +94,14 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ### **WORK IN PROGRESS**
 * (pdbjjens) initial release
+
+## Legal Notices
+
+ELV and others are trademarks or registered trademarks of ELV Elektronik AG D-26787 Leer, Germany - 
+<https://de.elv.com/>
+
+All other trademarks are the property of their respective owners.
+The authors are in no way endorsed by or affiliated with ELV Elektronik AG, or any associated subsidiaries, logos or trademarks.
 
 ## License
 MIT License
