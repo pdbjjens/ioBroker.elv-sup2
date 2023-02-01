@@ -13,8 +13,8 @@ const Sup = require('./lib/sup.js');
 // const fs = require("fs");
 
 
-let SerialPort;
-let sup ={};
+//let SerialPort;
+let sup = {};
 const objects   = {};
 const tasks = [];
 let connectTimeout;
@@ -81,7 +81,7 @@ class ElvSup2 extends utils.Adapter {
 		// Initialize your adapter here
 
 		try {
-			SerialPort = require('serialport').SerialPort;
+			require('serialport').SerialPort;
 		} catch (err) {
 			this.log.warn('serialport module is not available');
 			if (this.supportsFeature && !this.supportsFeature('CONTROLLER_NPM_AUTO_REBUILD')) {
@@ -92,103 +92,101 @@ class ElvSup2 extends utils.Adapter {
 
 		// Reset the connection indicator during startup
 		this.setState('info.connection', false, true);
-		let error;
-		this.checkPort(err => {
-			error = err;
-			if (!err) {
-				this.connect();
-			} else {
-				this.log.error('Cannot open port: ' + err);
-			}
-		});
-		if (!error) await this.subscribeStatesAsync('Config.*');
+
+		try {
+			await this.checkPort();
+		} catch (err) {
+			this.log.error('Cannot open port: ' + err);
+		}
+
+		await this.connect();
+		await this.initObjects();
+		await this.subscribeStatesAsync('Config.*');
+
 	}
 
 
 	// check if serial port is available
-	checkPort(callback) {
+	checkPort() {
+		return new Promise((resolve,reject) => {
+			const { SerialPort } = require('serialport');
 
-		if (!this.config.connectionIdentifier) {
-			callback && callback('Serial port is not selected');
-			return;
-		}
-		if (!this.config.connectionIdentifier.match(serialformat)) {
-			callback && callback('Serial port ID not valid. Should be like /dev/tty.usbserial or COM9');
-			return;
-		}
-		let sPort;
-		try {
-			sPort = new SerialPort({
-				path: this.config.connectionIdentifier || 'COM8',
-				baudRate: parseInt(this.config.baudrate, 10) || 19200,
+			if (!this.config.connectionIdentifier) {
+				reject (new Error ('Serial port is not selected'));
+			}
+			if (!this.config.connectionIdentifier.match(serialformat)) {
+				reject (new Error ('Serial port ID not valid. Format: /dev/tty.usbserial or COM9'));
+			}
+
+			const sPort = new SerialPort({
+				path: this.config.connectionIdentifier,
+				baudRate: parseInt(this.config.baudrate, 10),
 				autoOpen: false
 			});
 
-			sPort.on('error', err => {
-				sPort.isOpen && sPort.close();
-				this.log.debug('Checkport Error: ' + err);
-				callback && callback(err);
-				callback = null;
+			sPort.open();
+
+			sPort.on('error', (err) => {
+				sPort.isOpen && sPort.close(()=>{
+					//this.log.debug('Checkport Error: ' + err);
+					reject (err);
+				});
 			});
 
-			sPort.open(err => {
-				sPort.isOpen && sPort.close();
-				if (err) this.log.debug('Checkport open and closed: ' + err);
-				callback && callback(err);
-				callback = null;
+			sPort.on( 'open', () => {
+				//this.log.debug('sPort opened: ' + this.config.connectionIdentifier);
+				sPort.isOpen && sPort.flush(()=>{
+					sPort.close(()=>{
+						resolve (true);
+					});
+				});
 			});
-
-		} catch (e) {
-			this.log.error('Cannot open port: ' + e);
-			try {
-				sPort.isOpen && sPort.close();
-			} catch (ee) {
-				this.log.error('Cannot close port: ' + ee);
-			}
-			callback && callback(e);
-		}
-
+		});
 	}
 
 
 	// connect to SUP via serial port
-	connect(callback) {
-		const options = {
-			connectionMode: 'serial' ,
-			serialport: this.config.connectionIdentifier || 'COM8',
-			baudrate:   parseInt(this.config.baudrate, 10) || 19200,
-			databits: 8,
-			stopbits: 1,
-			parity: 'even',
-			//debug:      false,
-			parse:       true,
-			logger:     this.log.debug
-		};
+	connect() {
+		return new Promise((resolve, reject) => {
+			const options = {
+				connectionMode: 'serial' ,
+				serialport: this.config.connectionIdentifier,
+				baudrate:   parseInt(this.config.baudrate, 10),
+				databits: 8,
+				stopbits: 1,
+				parity: 'even',
+				debug:      false,
+				parse:       true,
+				logger:     this.log.debug
+			};
 
-		sup = new Sup(options);
+			sup = new Sup(options);
 
 
-		sup.on('close', () => {
-			this.setState('info.connection', false, true);
-			sup.close();
-			connectTimeout = setTimeout(() => {
-				connectTimeout = null;
-				//sup = null;
-				this.connect();
-			}, 10000);
+			sup.on('close', (err) => {
+				this.setState('info.connection', false, true);
+				if (err.disconnected) {
+					connectTimeout = setTimeout(() => {
+						connectTimeout = null;
+						//sup = null;
+						this.connect();
+					}, 10000);
+				}
+			});
+
+			sup.once('ready', () => {
+				this.setState('info.connection', true, true);
+				this.log.info('SUP connected: ' +  JSON.stringify(options));
+				resolve (true);
+			});
+
+			sup.on('error', (err) => {
+				this.log.error('Error on sup connection: ' +  err);
+				reject (err);
+			});
 		});
-
-		sup.on('ready', () => {
-			this.setState('info.connection', true, true);
-			this.log.info('SUP connected: ' +  JSON.stringify(options));
-			this.initObjects();
-			typeof callback === 'function' && callback();
-		});
-
-		sup.on('error', err =>
-			this.log.error('Error on sup connection: ' +  err));
-
 	}
+
 
 
 	// In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
