@@ -156,7 +156,7 @@ class ElvSup2 extends utils.Adapter {
 				databits: 8,
 				stopbits: 1,
 				parity: 'even',
-				debug:      false,
+				debug:      true,
 				parse:       true,
 				logger:     this.log.debug
 			};
@@ -342,13 +342,13 @@ class ElvSup2 extends utils.Adapter {
 				}
 				try {
 					const ack = await this.sendCommand (supCommand);
-					if (ack === '*A') {
+					if (ack.toString() == '*A') {
 						await this.setStateAsync (id , state.val, true);
 					} else {
 						this.log.error('Unknown acknowledge from SUP2');
 					}
 				} catch (err) {
-					this.log.error('Error in sendCommand: ' + err.toString());
+					this.log.error('Error in sendCommand: ' + err.message);
 				}
 			} else {
 				this.log.error('Unknown SUP2 parameter');
