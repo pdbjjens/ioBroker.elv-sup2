@@ -95,13 +95,14 @@ class ElvSup2 extends utils.Adapter {
 
 		try {
 			await this.checkPort();
+			await this.connect();
+			await this.initObjects();
+			await this.subscribeStatesAsync('Config.*');
 		} catch (err) {
 			this.log.error('Cannot open port: ' + err);
 		}
 
-		await this.connect();
-		await this.initObjects();
-		await this.subscribeStatesAsync('Config.*');
+
 
 	}
 
@@ -115,7 +116,7 @@ class ElvSup2 extends utils.Adapter {
 				reject (new Error ('Serial port is not selected'));
 			}
 			if (!this.config.connectionIdentifier.match(serialformat)) {
-				reject (new Error ('Serial port ID not valid. Format: /dev/tty.usbserial or COM9'));
+				reject (new Error ('Serial port ID not valid. Format: /dev/tty.usbserial or COM8'));
 			}
 
 			const sPort = new SerialPort({
@@ -165,11 +166,18 @@ class ElvSup2 extends utils.Adapter {
 
 			sup.on('close', (err) => {
 				this.setState('info.connection', false, true);
-				if (err.disconnected) {
-					connectTimeout = setTimeout(() => {
-						connectTimeout = null;
-						//sup = null;
-						this.connect();
+				//this.log.debug('Sup port closed: ' + err);
+				if (err) {
+					connectTimeout = setInterval(() => {
+						this.sup = null;
+						this.log.error(err + ' \n - Trying to reconnect Sup... ');
+						this.connect().then ( () => {
+							clearInterval(connectTimeout);
+							connectTimeout = null;
+						})
+							.catch ( (error) => {
+								this.log.debug('Reconnect failed: ' + error);
+							});
 					}, 10000);
 				}
 			});
@@ -181,6 +189,7 @@ class ElvSup2 extends utils.Adapter {
 			});
 
 			sup.on('error', (err) => {
+				this.setState('info.connection', false, true);
 				this.log.error('Error on sup connection: ' +  err);
 				reject (err);
 			});
@@ -223,7 +232,7 @@ class ElvSup2 extends utils.Adapter {
 	 * @param {() => void} callback
 	 */
 	async onUnload(callback) {
-		connectTimeout && clearTimeout(connectTimeout);
+		connectTimeout && clearInterval(connectTimeout);
 		connectTimeout = null;
 
 		checkConnectionTimer && clearTimeout(checkConnectionTimer);
@@ -237,7 +246,7 @@ class ElvSup2 extends utils.Adapter {
 				await sup.close();
 				//sup = null;
 			} catch (e) {
-				this.log.error('Cannot close serial port: ' + e.toString());
+				this.log.error('Cannot close serial port: ' + e.message);
 			}
 		}
 		callback();
