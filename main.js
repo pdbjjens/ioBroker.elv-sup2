@@ -8,6 +8,8 @@
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
 const Sup = require('./lib/sup.js');
+const { Queue } = require('async-await-queue');
+
 
 // Load your modules here, e.g.:
 // const fs = require("fs");
@@ -20,6 +22,13 @@ const tasks = [];
 let connectTimeout;
 let checkConnectionTimer;
 let timeoutId;
+/**
+ * No more than 1 concurrent tasks with
+ * at least 100ms between two tasks
+ * (measured from task start to task start)
+ */
+const scq = new Queue(1, 100); //state change queue
+const myPriority = -1;
 
 //SUP parameters which are not included in response message
 const supControl = {
@@ -275,85 +284,105 @@ class ElvSup2 extends utils.Adapter {
 	 * @param {ioBroker.State | null | undefined} state
 	 */
 	async onStateChange(id, state) {
+		const me = Symbol();
+		/* We wait in the line here */
+		await scq.wait(me, myPriority);
 
-		if (state && !state.ack) {
-			this.log.debug('State Change ' + JSON.stringify(id) + ', State: ' + JSON.stringify(state));
-			//  State Change "elv-sup2.0.Config.inpl" State: {"val":100,"ack":false,"ts":1581365531968,"q":0,"from":"system.adapter.admin.0","user":"system.user.admin","lc":1581365531968}
-			const oCmnd = id.split('.');
-			if (oCmnd.length < 4) {
-				this.log.error('Invalid object id');
-				return;
-			}
-			// 0: elv-sup2; 1:0; 2:Config; 3:inpl;
-			let supCommand = '';
-			if (oCmnd[2] === 'Config') {
-				switch (oCmnd[3]) {
-					case 'INPL':
-						supCommand = '*'+ 'INPL:' + state.val + '\n';
-						break;
-					case 'LIM':
-						supCommand = '*'+ 'LIM:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
-						break;
-					case 'INPM':
-						supCommand = '*'+ 'INPM:' + (state.val.toString().substring(0,1)==='A' ? 'ANALOG' : 'DIGITAL') + '\n';
-						break;
-					case 'FREQ':
-						supCommand = '*'+ 'FREQ:' + state.val*100 + '\n';
-						break;
-					case 'ADEV':
-						supCommand = '*'+ 'ADEV:' + state.val*100 + '\n';
-						break;
-					case 'POW':
-						supCommand = '*'+ 'POW:' + state.val + '\n';
-						break;
-					case 'PREE':
-						state.val = (state.val <= 49 ? 0 : (state.val <= 74 ? 50 : (state.val === 75 ? 75 : 50)));
-						supCommand = '*'+ 'PREE:' + state.val + '\n';
-						break;
-					case 'RDS':
-						supCommand = '*'+ 'RDS:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
-						break;
-					case 'RDSY':
-						supCommand = '*'+ 'RDSY:' + state.val + '\n';
-						break;
-					case 'RDSP':
-						supCommand = '*'+ 'RDSP:' + state.val + '\n';
-						break;
-					case 'TA':
-						supCommand = '*'+ 'TA:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
-						break;
-					case 'TP':
-						supCommand = '*'+ 'TP:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
-						break;
-					case 'MUTE':
-						supCommand = '*'+ 'MUTE:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
-						break;
-					case 'RF':
-						supCommand = '*'+ 'RF:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
-						break;
-					case 'RDST':
-						supCommand = '*'+ 'RDST:' + state.val.toString().padEnd(32) + '\n';
-						break;
-
-					default:
-						this.log.error(`Write of State ${oCmnd[3]} not implemented`);
-						break;
-
-				}
-				try {
-					const ack = await this.sendCommand (supCommand);
-					if (ack.toString() == '*A') {
-						await this.setStateAsync (id , state.val, true);
-					} else {
-						this.log.error('Unknown acknowledge from SUP2');
-					}
-				} catch (err) {
-					this.log.error('Error in sendCommand: ' + err.message);
-				}
-			} else {
-				this.log.error('Unknown SUP2 parameter');
-			}
+		try {
+			await this.processStateChange(id, state);
+		} catch (err) {
+			this.log.error(err);
+		} finally {
+			scq.end(me); //signal finished
 		}
+	}
+
+
+	processStateChange(id, state) {
+		return new Promise((resolve, reject) => {
+
+			if (state && !state.ack) {
+				this.log.debug('State Change ' + JSON.stringify(id) + ', State: ' + JSON.stringify(state));
+				//  State Change "elv-sup2.0.Config.inpl" State: {"val":100,"ack":false,"ts":1581365531968,"q":0,"from":"system.adapter.admin.0","user":"system.user.admin","lc":1581365531968}
+				const oCmnd = id.split('.');
+				if (oCmnd.length < 4) {
+					reject (new Error ('Invalid object id in processStateChange'));
+					//return;
+				}
+				// 0: elv-sup2; 1:0; 2:Config; 3:inpl;
+				let supCommand = '';
+				if (oCmnd[2] === 'Config') {
+					switch (oCmnd[3]) {
+						case 'INPL':
+							supCommand = '*'+ 'INPL:' + state.val + '\n';
+							break;
+						case 'LIM':
+							supCommand = '*'+ 'LIM:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+							break;
+						case 'INPM':
+							supCommand = '*'+ 'INPM:' + (state.val.toString().substring(0,1)==='A' ? 'ANALOG' : 'DIGITAL') + '\n';
+							break;
+						case 'FREQ':
+							supCommand = '*'+ 'FREQ:' + state.val*100 + '\n';
+							break;
+						case 'ADEV':
+							supCommand = '*'+ 'ADEV:' + state.val*100 + '\n';
+							break;
+						case 'POW':
+							supCommand = '*'+ 'POW:' + state.val + '\n';
+							break;
+						case 'PREE':
+							state.val = (state.val <= 49 ? 0 : (state.val <= 74 ? 50 : (state.val === 75 ? 75 : 50)));
+							supCommand = '*'+ 'PREE:' + state.val + '\n';
+							break;
+						case 'RDS':
+							supCommand = '*'+ 'RDS:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+							break;
+						case 'RDSY':
+							supCommand = '*'+ 'RDSY:' + state.val + '\n';
+							break;
+						case 'RDSP':
+							supCommand = '*'+ 'RDSP:' + state.val + '\n';
+							break;
+						case 'TA':
+							supCommand = '*'+ 'TA:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+							break;
+						case 'TP':
+							supCommand = '*'+ 'TP:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+							break;
+						case 'MUTE':
+							supCommand = '*'+ 'MUTE:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+							break;
+						case 'RF':
+							supCommand = '*'+ 'RF:' + (state.val===true ? 'ON' : 'OFF'  ) + '\n';
+							break;
+						case 'RDST':
+							supCommand = '*'+ 'RDST:' + state.val.toString().padEnd(32) + '\n';
+							break;
+
+						default:
+							reject (new Error (`Write of State ${oCmnd[3]} not implemented`));
+							break;
+
+					}
+					this.sendCommand (supCommand)
+						.then (
+							ack => {
+								if (ack.toString() == '*A') {
+									this.setStateAsync (id , state.val, true);
+									resolve(ack);
+								} else {
+									reject (new Error ('Unknown acknowledge from SUP2'));
+								}
+							})
+						.catch (err => {
+							reject ('Error in sendCommand: ' + err.message);
+						});
+				} else {
+					reject (new Error ('Unknown SUP2 parameter'));
+				}
+			}
+		});
 	}
 
 
