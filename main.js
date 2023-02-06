@@ -27,9 +27,11 @@ let timeoutId;
  * at least 100ms between two tasks
  * (measured from task start to task start)
  */
-const scq = new Queue(1, 100); //state change queue
+//const scq = new Queue(1, 100); //state change queue
 //const myPriority = -1;
 //const pscq =[];
+
+
 
 //SUP parameters which are not included in response message
 const supControl = {
@@ -286,7 +288,8 @@ class ElvSup2 extends utils.Adapter {
 	 */
 	async onStateChange(id, state) {
 
-		await this.processStateChange(id, state).catch((err) => this.log.error(err));//scq.run(() => this.processStateChange(id, state).catch((err) => this.log.error(err)));
+		this.serialized (this.processStateChange(id, state).catch((err) => this.log.error(err)));
+		//scq.run(() => this.processStateChange(id, state).catch((err) => this.log.error(err)));
 		//const me = Symbol();
 		/* We wait in the line here */
 		//await scq.wait(me, myPriority);
@@ -316,6 +319,19 @@ class ElvSup2 extends utils.Adapter {
 		;
 		*/
 	}
+
+	async serialized(fn){
+		let queue = Promise.resolve();
+		return (...args)=>{
+			const res = queue.then(() => fn(...args));
+			queue = res.catch(() => {});
+			return res;
+		};
+	}
+
+
+
+
 
 
 	async processStateChange(id, state) {
