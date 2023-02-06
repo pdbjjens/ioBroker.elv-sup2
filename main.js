@@ -287,28 +287,34 @@ class ElvSup2 extends utils.Adapter {
 	 * @param {ioBroker.State | null | undefined} state
 	 */
 	async onStateChange(id, state) {
+		try {
+			await this.processStateChange(id, state);
+		} catch (err) {
+			this.log.error(err);
+		}
+	}
 
-		this.serialized (this.processStateChange(id, state));
-		//scq.run(() => this.processStateChange(id, state).catch((err) => this.log.error(err)));
-		//const me = Symbol();
-		/* We wait in the line here */
-		//await scq.wait(me, myPriority);
-		/**
+
+	//scq.run(() => this.processStateChange(id, state).catch((err) => this.log.error(err)));
+	//const me = Symbol();
+	/* We wait in the line here */
+	//await scq.wait(me, myPriority);
+	/**
 		 * Do your expensive async task here
 		 * Queue will schedule it at
 		 * no more than 2 requests running in parallel
 		 * launched at least 100ms apart
 		 */
-		//try {
-		//	await this.processStateChange(id, state);
-		//} catch (err) {
-		//	this.log.error(err);
-		//} finally {
-		/* Signal that we are finished */
-		/* Do not forget to handle the exceptions! */
-		//	scq.end(me);
-		//}
-		/*
+	//try {
+	//	await this.processStateChange(id, state);
+	//} catch (err) {
+	//	this.log.error(err);
+	//} finally {
+	/* Signal that we are finished */
+	/* Do not forget to handle the exceptions! */
+	//	scq.end(me);
+	//}
+	/*
 		const me = Symbol();
 		// We wait in the line here
 		scq
@@ -318,17 +324,6 @@ class ElvSup2 extends utils.Adapter {
 			.finally (() => scq.end(me))//signal finished
 		;
 		*/
-	}
-
-	async serialized(fn){
-		let queue = Promise.resolve();
-		return (...args)=>{
-			const res = queue.then(() => fn(...args));
-			queue = res.catch(() => {});
-			return res;
-		};
-	}
-
 
 
 
