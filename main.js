@@ -28,7 +28,8 @@ let timeoutId;
  * (measured from task start to task start)
  */
 const scq = new Queue(1, 100); //state change queue
-const myPriority = -1;
+//const myPriority = -1;
+//const pscq =[];
 
 //SUP parameters which are not included in response message
 const supControl = {
@@ -284,21 +285,40 @@ class ElvSup2 extends utils.Adapter {
 	 * @param {ioBroker.State | null | undefined} state
 	 */
 	async onStateChange(id, state) {
-		const me = Symbol();
-		/* We wait in the line here */
-		await scq.wait(me, myPriority);
 
-		try {
-			await this.processStateChange(id, state);
-		} catch (err) {
-			this.log.error(err);
-		} finally {
-			scq.end(me); //signal finished
-		}
+		await this.processStateChange(id, state).catch((err) => this.log.error(err));//scq.run(() => this.processStateChange(id, state).catch((err) => this.log.error(err)));
+		//const me = Symbol();
+		/* We wait in the line here */
+		//await scq.wait(me, myPriority);
+		/**
+		 * Do your expensive async task here
+		 * Queue will schedule it at
+		 * no more than 2 requests running in parallel
+		 * launched at least 100ms apart
+		 */
+		//try {
+		//	await this.processStateChange(id, state);
+		//} catch (err) {
+		//	this.log.error(err);
+		//} finally {
+		/* Signal that we are finished */
+		/* Do not forget to handle the exceptions! */
+		//	scq.end(me);
+		//}
+		/*
+		const me = Symbol();
+		// We wait in the line here
+		scq
+			.wait(me, myPriority)
+			.then(()  => this.processStateChange(id, state))
+			.catch ( (err) => this.log.error(err))
+			.finally (() => scq.end(me))//signal finished
+		;
+		*/
 	}
 
 
-	processStateChange(id, state) {
+	async processStateChange(id, state) {
 		return new Promise((resolve, reject) => {
 
 			if (state && !state.ack) {
