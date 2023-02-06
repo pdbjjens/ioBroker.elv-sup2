@@ -288,7 +288,7 @@ class ElvSup2 extends utils.Adapter {
 	 */
 	async onStateChange(id, state) {
 
-		this.serialized (this.processStateChange(id, state).catch((err) => this.log.error(err)));
+		this.serialized (this.processStateChange(id, state));
 		//scq.run(() => this.processStateChange(id, state).catch((err) => this.log.error(err)));
 		//const me = Symbol();
 		/* We wait in the line here */
