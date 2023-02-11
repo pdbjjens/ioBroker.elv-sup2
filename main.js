@@ -15,11 +15,10 @@ const { Queue } = require('async-await-queue');
 // const fs = require("fs");
 
 
-//let SerialPort;
 let sup = {};
 const objects   = {};
 const Debug = false;
-const id = 'configuration'; // SUP config channel
+const channelId = 'configuration'; // SUP config channel
 let connectTimeout;
 let checkConnectionTimer;
 let refreshTimeout;
@@ -117,7 +116,7 @@ class ElvSup2 extends utils.Adapter {
 			await this.checkPort();
 			await this.connect();
 			await this.initObjects();
-			await this.subscribeStatesAsync('Config.*');
+			await this.subscribeStatesAsync(channelId + '.*');
 		} catch (err) {
 			this.log.error('Cannot open port: ' + err);
 		}
@@ -326,20 +325,20 @@ class ElvSup2 extends utils.Adapter {
 
 
 
-	processStateChange(id, state) {
+	processStateChange(sid, state) {
 		return new Promise((resolve, reject) => {
+			if (Debug) this.log.debug('State Change ' + JSON.stringify(sid) + ', State: ' + JSON.stringify(state));
 
 			if (state && !state.ack) {
-				if (Debug) this.log.debug('State Change ' + JSON.stringify(id) + ', State: ' + JSON.stringify(state));
 				//  State Change "elv-sup2.0.Config.inpl" State: {"val":100,"ack":false,"ts":1581365531968,"q":0,"from":"system.adapter.admin.0","user":"system.user.admin","lc":1581365531968}
-				const oCmnd = id.split('.');
+				const oCmnd = sid.split('.');
 				if (oCmnd.length < 4) {
 					reject (new Error ('Invalid object id in processStateChange'));
 					//return;
 				}
 				// 0: elv-sup2; 1:0; 2:Config; 3:inpl;
 				let supCommand = '';
-				if (oCmnd[2] === 'Config') {
+				if (oCmnd[2] === channelId) {
 					switch (oCmnd[3]) {
 						case 'INPL':
 							supCommand = '*'+ 'INPL:' + state.val + '\n';
@@ -399,9 +398,9 @@ class ElvSup2 extends utils.Adapter {
 					this.queuedSendCommand (supCommand)
 						.then (
 							(ack) => {
-								//this.log.debug('Ack ' + ack );
+								this.log.debug('Ack ' + ack );
 								if (ack == '*A') {
-									this.setState (id , state.val, true);
+									this.setStateAsync (sid , state.val, true);
 									resolve(ack);
 								} else {
 									reject (new Error ('Unknown acknowledge from SUP2'));
@@ -501,17 +500,18 @@ class ElvSup2 extends utils.Adapter {
 		} catch (err) {
 			this.log.error(err);
 		}
-		if (!objects[this.namespace + '.' + id]) { //Channel does not yet exist
+		if (!objects[this.namespace + '.' + channelId]) { //Channel does not yet exist
 			//create new channel
 			const newChannel = {
-				_id:    this.namespace + '.' + id,
+				_id:    this.namespace + '.' + channelId,
 				type:   'channel',
 				common: {
-					name: 'SUP2 Configuration'
+					name: 'SUP2 Configuration',
+					type: 'string',
 				},
 				native: supConfig
 			};
-			objects[this.namespace + '.' + id] = newChannel;
+			objects[this.namespace + '.' + channelId] = newChannel;
 			try {
 				await this.createObjNotExists (newChannel);
 			} catch (err) {
@@ -752,13 +752,13 @@ class ElvSup2 extends utils.Adapter {
 					//break;
 			}
 			const newState = {
-				_id:    `${this.namespace}.${id}.${obj}`,
+				_id:    `${this.namespace}.${channelId}.${obj}`,
 				type:   'state',
 				common: common,
 				native: {}
 			};
 
-			objects[`${this.namespace}.${id}.${obj}`] = newState;
+			objects[`${this.namespace}.${channelId}.${obj}`] = newState;
 			this.createObjNotExists (newState)
 				.catch((e) => {return(e);})
 				.finally(() => ocq.end(me));
@@ -786,7 +786,7 @@ class ElvSup2 extends utils.Adapter {
 		let stateVal;
 
 		for (const state in supStates) {
-			const oid  = this.namespace + '.' + id + '.' + state;
+			const oid  = this.namespace + '.' + channelId + '.' + state;
 			const me = Symbol();
 			/* We wait in the line here */
 			await ssq.wait(me, myPriority);
@@ -881,7 +881,7 @@ class ElvSup2 extends utils.Adapter {
 	}
 
 
-/*
+	/*
 	async updateConfigFromDevice() {
 		let supConfig = {};
 		try {
@@ -892,7 +892,7 @@ class ElvSup2 extends utils.Adapter {
 			this.log.error('Error in updateDevice: ' + err.toString());
 		}
 		for (const state in supConfig) {
-			const oid  = this.namespace + '.' + id + '.' + state;
+			const oid  = this.namespace + '.' + channelId + '.' + state;
 			let localState;
 			try {
 				localState = await this.getStateAsync(oid);
