@@ -18,7 +18,8 @@ const { Queue } = require('async-await-queue');
 //let SerialPort;
 let sup = {};
 const objects   = {};
-const tasks = [];
+const Debug = false;
+const id = 'configuration'; // SUP config channel
 let connectTimeout;
 let checkConnectionTimer;
 let refreshTimeout;
@@ -29,7 +30,9 @@ let timeoutId;
  * (measured from task start to task start)
  */
 const scq = new Queue(1, 1000); //state change queue
-const myPriority = -1;
+const ocq = new Queue(1,100); //object create queue
+const ssq = new Queue(1,100); //state set queue
+const myPriority = -1; // priority -1 is higher priority than 0
 //const pscq =[];
 //const tqueue = [];
 //let workingOnPromise = false;
@@ -38,12 +41,13 @@ const myPriority = -1;
 
 //SUP parameters which are not included in response message
 const supControl = {
-	FREQ: 88.5,
+	FREQ: 8850,
 	RDST: 'First text',
-	TA: false,
-	TP: false,
-	MUTE: false,
-	RF: true,
+	MODE: 'STEREO',
+	TA: 'OFF',
+	TP: 'OFF',
+	MUTE: 'OFF',
+	RF: 'ON'
 };
 /*
 // SUP2 command list
@@ -63,6 +67,7 @@ const commands = {
 	ta: 'TA',
 	tp: 'TP',
 	mute: 'MUTE',
+	mode: 'MODE',
 	rf: 'RF',
 	rdst: 'RDST'
 };
@@ -171,7 +176,7 @@ class ElvSup2 extends utils.Adapter {
 				databits: 8,
 				stopbits: 1,
 				parity: 'even',
-				debug:      false,
+				debug:      Debug,
 				parse:       true,
 				logger:     this.log.debug
 			};
@@ -181,7 +186,7 @@ class ElvSup2 extends utils.Adapter {
 
 			sup.on('close', (err) => {
 				this.setState('info.connection', false, true);
-				//this.log.debug('Sup port closed: ' + err);
+
 				if (err) {
 					connectTimeout = setInterval(() => {
 						this.sup = null;
@@ -191,7 +196,7 @@ class ElvSup2 extends utils.Adapter {
 							connectTimeout = null;
 						})
 							.catch ( (error) => {
-								this.log.debug('Reconnect failed: ' + error);
+								if (Debug) this.log.debug('Reconnect failed: ' + error);
 							});
 					}, 10000);
 				}
@@ -325,7 +330,7 @@ class ElvSup2 extends utils.Adapter {
 		return new Promise((resolve, reject) => {
 
 			if (state && !state.ack) {
-				this.log.debug('State Change ' + JSON.stringify(id) + ', State: ' + JSON.stringify(state));
+				if (Debug) this.log.debug('State Change ' + JSON.stringify(id) + ', State: ' + JSON.stringify(state));
 				//  State Change "elv-sup2.0.Config.inpl" State: {"val":100,"ack":false,"ts":1581365531968,"q":0,"from":"system.adapter.admin.0","user":"system.user.admin","lc":1581365531968}
 				const oCmnd = id.split('.');
 				if (oCmnd.length < 4) {
@@ -344,6 +349,9 @@ class ElvSup2 extends utils.Adapter {
 							break;
 						case 'INPM':
 							supCommand = '*'+ 'INPM:' + (state.val.toString().substring(0,1)==='A' ? 'ANALOG' : 'DIGITAL') + '\n';
+							break;
+						case 'MODE':
+							supCommand = '*'+ 'MODE:' + (state.val.toString().substring(0,1)==='S' ? 'STEREO' : 'MONO') + '\n';
 							break;
 						case 'FREQ':
 							supCommand = '*'+ 'FREQ:' + state.val*100 + '\n';
@@ -430,7 +438,7 @@ class ElvSup2 extends utils.Adapter {
  */
 	sendCommand(cmd) {
 		return new Promise((resolve, reject) => {
-			this.log.debug('Send command: ' + cmd);
+			if (Debug) this.log.debug('Send command: ' + cmd);
 
 			sup.write(cmd, err => {
 				if (!err) {
@@ -470,290 +478,6 @@ class ElvSup2 extends utils.Adapter {
 	}
 */
 
-	async initObjects() {
-
-		let supConfig = {};
-		try {
-			supConfig = await this.getSupConfig();
-			this.log.debug('In initObjects: ' + JSON.stringify(supConfig));
-
-			const id = 'Config';
-			if (!objects[this.namespace + '.' + id]) {
-				//create new channel
-				const newChannel = {
-					_id:    this.namespace + '.' + id,
-					type:   'channel',
-					common: {
-						name: 'SUP2 Configuration'
-					},
-					native: supConfig
-				};
-				objects[this.namespace + '.' + id] = newChannel;
-				tasks.push({type: 'object', id: newChannel._id, obj: newChannel});
-				this.log.debug(`channel object  ${newChannel._id} pushed`);
-
-				//create new state objects from SUP2 response
-				let common;
-				for (const _state in supConfig) {
-					switch(_state) {
-						case 'VERS':
-							common = {
-								name: 'SW Version',
-								type: 'string',
-								role: 'text',
-								unit: '',
-								read: true,
-								write: false
-							};
-							break;
-						case 'FRE1':
-							common = {
-								name: 'Preset Frequency 1',
-								type: 'number',
-								role: 'value',
-								unit: 'MHz',
-								min: 87.50,
-								max: 108.00,
-								read: true,
-								write: false
-							};
-							break;
-						case 'FRE2':
-							common = {
-								name: 'Preset Frequency 2',
-								type: 'number',
-								role: 'value',
-								unit: 'MHz',
-								min: 87.50,
-								max: 108.00,
-								read: true,
-								write: false
-							};
-							break;
-						case 'FRE3':
-							common = {
-								name: 'Preset Frequency 3',
-								type: 'number',
-								role: 'value',
-								unit: 'MHz',
-								min: 87.50,
-								max: 108.00,
-								read: true,
-								write: false
-							};
-							break;
-						case 'POW':
-							common = {
-								name: 'Output Power',
-								type: 'number',
-								role: 'power.level',
-								unit: 'dB',
-								min: 88,
-								max: 118,
-								read: true,
-								write: true
-							};
-							break;
-						case 'INPL':
-							common = {
-								name: 'Input Level',
-								type: 'number',
-								role: 'level.input',
-								unit: '%',
-								min: 0,
-								max: 100,
-								read: true,
-								write: true
-							};
-							break;
-						case 'PREE':
-							common = {
-								name: 'Preemphasis',
-								type: 'number',
-								role: 'value',
-								unit: 'uS',
-								min: 0,
-								max: 75,
-								read: true,
-								write: true
-							};
-							break;
-						case 'ADEV':
-							common = {
-								name: 'Audio Deviation',
-								type: 'number',
-								role: 'value',
-								unit: 'kHz',
-								min: 0.00,
-								max: 90.00,
-								read: true,
-								write: true
-							};
-							break;
-						case 'LIM':
-							common = {
-								name: 'Limiter',
-								type: 'boolean',
-								role: 'indicator',
-								read: true,
-								write: true
-							};
-							break;
-						case 'RDS':
-							common = {
-								name: 'RDS On/Off',
-								type: 'boolean',
-								role: 'indicator',
-								read: true,
-								write: true
-							};
-							break;
-						case 'INPM':
-							common = {
-								name: 'Input Mode',
-								type: 'string',
-								role: 'indicator',
-								read: true,
-								write: true
-							};
-							break;
-						case 'RDSP':
-							common = {
-								name: 'RDS Program Name',
-								type: 'string',
-								role: 'text',
-								read: true,
-								write: true
-							};
-							break;
-						case 'RDST':
-							common = {
-								name: 'RDS Text',
-								type: 'string',
-								role: 'text',
-								read: true,
-								write: true
-							};
-							break;
-						case 'RDSY':
-							common = {
-								name: 'RDS Program Type',
-								type: 'number',
-								role: 'value',
-								unit: '',
-								min: 0,
-								max: 31,
-								read: true,
-								write: true
-							};
-							break;
-						default:
-							this.log.error('Unknown sup configuration parameter: ' + _state);
-							break;
-					}
-					const newState = {
-						_id:    `${this.namespace}.${id}.${_state}`,
-						type:   'state',
-						common: common,
-						native: {}
-					};
-
-					objects[`${this.namespace}.${id}.${_state}`] = newState;
-					tasks.push({type: 'object', id: newState._id, obj: newState});
-					this.log.debug(`state object  ${newState._id} pushed`);
-
-				}
-
-				//create new state objects which are not in SUP2 response
-				for (const key in supControl) {
-					switch(key) {
-						case 'FREQ':
-							common = {
-								name: 'Frequency',
-								type: 'number',
-								role: 'value',
-								unit: 'MHz',
-								min: 87.50,
-								max: 108.00,
-								read: true,
-								write: true
-							};
-							break;
-						case 'RDST':
-							common = {
-								name: 'RDS Text',
-								type: 'string',
-								role: 'text',
-								unit: '',
-								read: true,
-								write: true
-							};
-							break;
-						case 'TA':
-							common = {
-								name: 'TA On/Off',
-								type: 'boolean',
-								role: 'indicator',
-								read: true,
-								write: true
-							};
-							break;
-						case 'TP':
-							common = {
-								name: 'TP On/Off',
-								type: 'boolean',
-								role: 'indicator',
-								read: true,
-								write: true
-							};
-							break;
-						case 'MUTE':
-							common = {
-								name: 'Mute On/Off',
-								type: 'boolean',
-								role: 'indicator',
-								read: true,
-								write: true
-							};
-							break;
-						case 'RF':
-							common = {
-								name: 'RF On/Off',
-								type: 'boolean',
-								role: 'indicator',
-								read: true,
-								write: true
-							};
-							break;
-						default:
-							this.log.error('Unknown sup control parameter: ' + key);
-							break;
-					}
-
-					const newState = {
-						_id:    `${this.namespace}.${id}.${key}`,
-						type:   'state',
-						common: common,
-						native: {}
-					};
-
-					objects[`${this.namespace}.${id}.${key}`] = newState;
-					tasks.push({type: 'object', id: newState._id, obj: newState});
-					this.log.debug(`state object  ${newState._id} pushed`);
-
-
-				}
-				await this.processTasks();
-				await this.setStates(supConfig);
-				await this.setStates(supControl);
-				await this.processTasks();
-			}
-
-		} catch (err) {
-			this.log.error('Error in initObjects: ' + err.toString());
-		}
-	}
-
 	getSupConfig() {
 		return new Promise((resolve, reject) => {
 			this.sendCommand('*GET:\n')
@@ -769,162 +493,424 @@ class ElvSup2 extends utils.Adapter {
 		});
 	}
 
-	async processTasks() {
-		// Set states or create objects
-		while (tasks.length) {
-			const task = tasks.shift();
-
-			if (task.type === 'state') {
-				try {
-					await this.setForeignStateAsync(task.id, task.val, true);
-					this.log.info(`state ${task.id} set with value ${task.val}`);
-				} catch (err) {
-					this.log.error('Unexpected error - ' + err);
-				}
-			} else if (task.type === 'object') {
-				try {
-					const obj = await this.getForeignObjectAsync(task.id);
-					if (!obj) { //object does not exist - create it!
-						try {
-							await this.setForeignObjectAsync(task.id, task.obj);
-							this.log.info(`object ${task.id} created`);
-						} catch (err) {
-							this.log.error('Unexpected error - ' + err);
-						}
-					} else { //check if object changed tbd.
-						//let changed = false;
-						/*if (JSON.stringify(obj.native) !== JSON.stringify(task.obj.native)) {
-							obj.native = task.obj.native;
-							changed = true;
-						}
-
-						if (changed) {
-							try {
-								await this.setForeignObjectAsync(obj._id, obj);
-								this.log.info(`object ${this.namespace}.${obj._id} created`);
-								setImmediate(this.processTasks);
-							} catch (err) {
-								this.log.error('Unexpected error - ' + err);
-							}
-*/
-						//} else {
-
-						//this.log.info('Object created - ' + JSON.stringify(obj));
-						//setImmediateAsync(this.processTasks);
-						//}
-
-					}
-				} catch (error) {
-					this.log.error('Unexpected error - ' + JSON.stringify(error));
-				}
-			}
-		}
-	}
-
-	async updateDevice() {
+	async initObjects() {
 		let supConfig = {};
 		try {
 			supConfig = await this.getSupConfig();
-			this.log.debug('In updateDevice: ' + JSON.stringify(supConfig));
+			if (Debug) this.log.debug('In initObjects: ' + JSON.stringify(supConfig));
+		} catch (err) {
+			this.log.error(err);
+		}
+		if (!objects[this.namespace + '.' + id]) { //Channel does not yet exist
+			//create new channel
+			const newChannel = {
+				_id:    this.namespace + '.' + id,
+				type:   'channel',
+				common: {
+					name: 'SUP2 Configuration'
+				},
+				native: supConfig
+			};
+			objects[this.namespace + '.' + id] = newChannel;
+			try {
+				await this.createObjNotExists (newChannel);
+			} catch (err) {
+				this.log.error(`Error creating channel object  ${newChannel._id}:` + err.message);
+			}
+		}
+		try {
+			// create all objects and initialize states
+			await this.createObjects(supConfig);
+			await this.createObjects(supControl);
+			await this.setStates(supConfig);
+			await this.setStates(supControl);
+		} catch (err) {
+			this.log.error( err);
+		}
+	}
+
+	async createObjects(config) {
+		//const q = [];
+		let common = {};
+		for (const obj in config) {
+			const me = Symbol();
+			/* We wait in the line here */
+			await ocq.wait(me, myPriority);
+
+			switch(obj) {
+				case 'VERS':
+					common = {
+						name: 'SW Version',
+						type: 'string',
+						role: 'text',
+						unit: '',
+						read: true,
+						write: false
+					};
+					break;
+				case 'FRE1':
+					common = {
+						name: 'Preset Frequency 1',
+						type: 'number',
+						role: 'value',
+						unit: 'MHz',
+						min: 87.50,
+						max: 108.00,
+						read: true,
+						write: false
+					};
+					break;
+				case 'FRE2':
+					common = {
+						name: 'Preset Frequency 2',
+						type: 'number',
+						role: 'value',
+						unit: 'MHz',
+						min: 87.50,
+						max: 108.00,
+						read: true,
+						write: false
+					};
+					break;
+				case 'FRE3':
+					common = {
+						name: 'Preset Frequency 3',
+						type: 'number',
+						role: 'value',
+						unit: 'MHz',
+						min: 87.50,
+						max: 108.00,
+						read: true,
+						write: false
+					};
+					break;
+				case 'POW':
+					common = {
+						name: 'Output Power',
+						type: 'number',
+						role: 'power.level',
+						unit: 'dB',
+						min: 88,
+						max: 118,
+						read: true,
+						write: true
+					};
+					break;
+				case 'INPL':
+					common = {
+						name: 'Input Level',
+						type: 'number',
+						role: 'level.input',
+						unit: '%',
+						min: 0,
+						max: 100,
+						read: true,
+						write: true
+					};
+					break;
+				case 'PREE':
+					common = {
+						name: 'Preemphasis',
+						type: 'number',
+						role: 'value',
+						unit: 'uS',
+						min: 0,
+						max: 75,
+						read: true,
+						write: true
+					};
+					break;
+				case 'ADEV':
+					common = {
+						name: 'Audio Deviation',
+						type: 'number',
+						role: 'value',
+						unit: 'kHz',
+						min: 0.00,
+						max: 90.00,
+						read: true,
+						write: true
+					};
+					break;
+				case 'LIM':
+					common = {
+						name: 'Limiter',
+						type: 'boolean',
+						role: 'indicator',
+						read: true,
+						write: true
+					};
+					break;
+				case 'RDS':
+					common = {
+						name: 'RDS On/Off',
+						type: 'boolean',
+						role: 'indicator',
+						read: true,
+						write: true
+					};
+					break;
+				case 'INPM':
+					common = {
+						name: 'Input Mode',
+						type: 'string',
+						role: 'indicator',
+						read: true,
+						write: true
+					};
+					break;
+				case 'RDSP':
+					common = {
+						name: 'RDS Program Name',
+						type: 'string',
+						role: 'text',
+						read: true,
+						write: true
+					};
+					break;
+				case 'RDST':
+					common = {
+						name: 'RDS Text',
+						type: 'string',
+						role: 'text',
+						read: true,
+						write: true
+					};
+					break;
+				case 'RDSY':
+					common = {
+						name: 'RDS Program Type',
+						type: 'number',
+						role: 'value',
+						unit: '',
+						min: 0,
+						max: 31,
+						read: true,
+						write: true
+					};
+					break;
+				case 'FREQ':
+					common = {
+						name: 'Frequency',
+						type: 'number',
+						role: 'value',
+						unit: 'MHz',
+						min: 87.50,
+						max: 108.00,
+						read: true,
+						write: true
+					};
+					break;
+				case 'MODE':
+					common = {
+						name: 'Mode',
+						type: 'string',
+						role: 'indicator',
+						read: true,
+						write: true
+					};
+					break;
+				case 'TA':
+					common = {
+						name: 'TA On/Off',
+						type: 'boolean',
+						role: 'indicator',
+						read: true,
+						write: true
+					};
+					break;
+				case 'TP':
+					common = {
+						name: 'TP On/Off',
+						type: 'boolean',
+						role: 'indicator',
+						read: true,
+						write: true
+					};
+					break;
+				case 'MUTE':
+					common = {
+						name: 'Mute On/Off',
+						type: 'boolean',
+						role: 'indicator',
+						read: true,
+						write: true
+					};
+					break;
+				case 'RF':
+					common = {
+						name: 'RF On/Off',
+						type: 'boolean',
+						role: 'indicator',
+						read: true,
+						write: true
+					};
+					break;
+
+				default:
+					return (new Error('Unknown sup configuration parameter: ' + obj));
+					//break;
+			}
+			const newState = {
+				_id:    `${this.namespace}.${id}.${obj}`,
+				type:   'state',
+				common: common,
+				native: {}
+			};
+
+			objects[`${this.namespace}.${id}.${obj}`] = newState;
+			this.createObjNotExists (newState)
+				.catch((e) => {return(e);})
+				.finally(() => ocq.end(me));
+		}
+		return await ocq.flush();
+	}
+
+	async createObjNotExists (newState) {
+		try {
+			const obj = await this.getForeignObjectAsync(newState._id);
+			if (!obj) { //object does not exist - create it!
+				try {
+					await this.setForeignObjectAsync(newState._id, newState);
+					this.log.info(`Object ${newState._id} created`);
+				} catch (err) {
+					return (err);
+				}
+			}
+		} catch (err) {
+			return (err);
+		}
+	}
+
+	async setStates(supStates) {
+		let stateVal;
+
+		for (const state in supStates) {
+			const oid  = this.namespace + '.' + id + '.' + state;
+			const me = Symbol();
+			/* We wait in the line here */
+			await ssq.wait(me, myPriority);
+
+			switch(state) {
+				case 'VERS':
+					stateVal = supStates.VERS.toString().replace(/(?<=^.{1})/, '.');
+					break;
+				case 'FRE1':
+					stateVal = supStates.FRE1/100;
+					break;
+				case 'FRE2':
+					stateVal = supStates.FRE2/100;
+					break;
+				case 'FRE3':
+					stateVal = supStates.FRE3/100;
+					break;
+				case 'POW':
+					stateVal = supStates.POW;
+					break;
+				case 'INPL':
+					stateVal = supStates.INPL;
+					break;
+				case 'PREE':
+					stateVal = supStates.PREE;
+					break;
+				case 'ADEV':
+					stateVal = supStates.ADEV/100;
+					break;
+				case 'LIM':
+					stateVal = supStates.LIM === 'ON' ? true : false;
+					break;
+				case 'RDS':
+					stateVal = supStates.RDS === 'ON' ? true : false;
+					break;
+				case 'INPM':
+					stateVal = supStates.INPM === 'ANALOG'? 'Analog' : 'Digital';
+					break;
+				case 'MODE':
+					stateVal = supStates.MODE === 'STEREO'? 'Stereo' : 'Mono';
+					break;
+				case 'RDSP':
+					stateVal = supStates.RDSP;
+					break;
+				case 'RDST':
+					stateVal = supStates.RDST;
+					break;
+				case 'RDSY':
+					stateVal = supStates.RDSY;
+					break;
+				case 'FREQ':
+					stateVal = supStates.FREQ/100;
+					break;
+				case 'TA':
+					stateVal = supStates.TA === 'ON' ? true : false;
+					break;
+				case 'TP':
+					stateVal = supStates.TP === 'ON' ? true : false;
+					break;
+				case 'MUTE':
+					stateVal = supStates.MUTE === 'ON' ? true : false;
+					break;
+				case 'RF':
+					stateVal = supStates.RF === 'ON' ? true : false;
+					break;
+				default:
+					return (new Error('Unknown sup configuration state: ' + state));
+					//break;
+			}
+
+			if (Debug) this.log.debug(`state ${oid} pushed with stateVal ${stateVal} ${typeof(stateVal)}`);
+			this.setSupState(oid, stateVal)
+				.catch((err) => {return (err);})
+				.finally(() => ssq.end(me));
+		}
+		return await ssq.flush();
+	}
+
+
+	setSupState(oid, stateVal) {
+		return new Promise((resolve, reject) => {
+
+			this.setForeignStateAsync(oid, stateVal, true)
+				.then (() => {
+					if (Debug) this.log.debug(`state ${oid} set with value ${stateVal}`);
+					resolve (true);
+				})
+				.catch ((err) => {
+					reject (err);
+				});
+		});
+	}
+
+
+/*
+	async updateConfigFromDevice() {
+		let supConfig = {};
+		try {
+			supConfig = await this.getSupConfig();
+			if (Debug) this.log.debug('In updateDevice: ' + JSON.stringify(supConfig));
 
 		} catch (err) {
 			this.log.error('Error in updateDevice: ' + err.toString());
 		}
-	}
-
-
-	async setStates(obj) {
-		// Set all state values according to SUP2 response received
-		const id = 'Config';
-		//const isStart = !tasks.length;
-
-		const supConfig = obj;
-		let value;
-		for (const state in obj) {
+		for (const state in supConfig) {
 			const oid  = this.namespace + '.' + id + '.' + state;
-			//this.log.info(`state ${state} with value ${obj.state} to be checked`);
-			switch(state) {
-				case 'VERS':
-					supConfig[state] = supConfig.VERS.toString().replace(/(?<=^.{1})/, '.');
-					value = supConfig.VERS;
-					break;
-				case 'FRE1':
-					supConfig[state] = supConfig.FRE1/100;
-					value = supConfig.FRE1;
-					break;
-				case 'FRE2':
-					supConfig[state] = supConfig.FRE2/100;
-					value = supConfig.FRE2;
-					break;
-				case 'FRE3':
-					supConfig[state] = supConfig.FRE3/100;
-					value = supConfig.FRE3;
-					break;
-				case 'POW':
-				//supConfig[state] = supConfig.POW;
-					value = supConfig.POW;
-					break;
-				case 'INPL':
-				//supConfig[state] = supConfig.INPL;
-					value = supConfig.INPL;
-					break;
-				case 'PREE':
-				//supConfig[state] = supConfig.PREE;
-					value = supConfig.PREE;
-					break;
-				case 'ADEV':
-					supConfig[state] = supConfig.ADEV/100;
-					value = supConfig.ADEV;
-					break;
-				case 'LIM':
-					supConfig[state] = supConfig.LIM === 'ON' ? true : false;
-					value = supConfig.LIM;
-					break;
-				case 'RDS':
-					supConfig[state] = supConfig.RDS === 'ON' ? true : false;
-					value = supConfig.RDS;
-					break;
-				case 'INPM':
-					supConfig[state] = supConfig.INPM === 'ANALOG'? 'Analog' : 'Digital';
-					value = supConfig.INPM;
-					break;
-				case 'RDSP':
-				//supConfig[state] = supConfig.RDSP;
-					value = supConfig.RDSP;
-					break;
-				case 'RDST':
-				//supConfig[state] = supConfig.RDST;
-					value = supConfig.RDST;
-					break;
-				case 'RDSY':
-				//supConfig[state] = supConfig.RDSY;
-					value = supConfig.RDSY;
-					break;
-				case 'FREQ':
-					value = supConfig.FREQ;
-					break;
-				case 'TA':
-					value = supConfig.TA;
-					break;
-				case 'TP':
-					value = supConfig.TP;
-					break;
-				case 'MUTE':
-					value = supConfig.MUTE;
-					break;
-				case 'RF':
-					value = supConfig.RF;
-					break;
-				default:
-					this.log.error('Unknown sup configuration state: ' + state);
-					break;
+			let localState;
+			try {
+				localState = await this.getStateAsync(oid);
+			} catch (err) {
+				return (err);
 			}
-			tasks.push({type: 'state', id: oid, val: value});
-			this.log.debug(`state ${oid} pushed with value ${value}`);
-		}
+
+			if (supConfig.state !== localState.val)  {
+				try {
+					await this.setSupState(oid,supConfig.state);
+				} catch (err) {
+					return (err);
+				}
+
+			}
 	}
 
-
+*/
 	// If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
 	// /**
 	//  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
