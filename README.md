@@ -24,6 +24,11 @@ The format should be e.g.: /dev/tty.USBx on Linux or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (pdbjjens) pre-release
+
 ### 0.0.2 (2023-02-13)
 
 * (pdbjjens) initial release
