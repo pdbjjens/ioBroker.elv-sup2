@@ -1,5 +1,4 @@
 {
-	"elv-sup2 adapter settings": "elv-sup2的适配器设置",
-	"option1": "选项1",
-	"option2": "选项2"
+    "Connection Identifier": "连接标识符",
+    "Serial Port Id for SUP2 access. Format: /dev/tty.usbserial or COM8": "SUP2 访问的串行端口 ID。格式：/dev/tty.usbserial 或 COM8"
 }

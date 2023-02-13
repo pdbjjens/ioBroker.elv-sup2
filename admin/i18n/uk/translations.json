@@ -1,0 +1,4 @@
+{
+    "Connection Identifier": "Ідентифікатор підключення",
+    "Serial Port Id for SUP2 access. Format: /dev/tty.usbserial or COM8": "Ідентифікатор послідовного порту для доступу до SUP2. Формат: /dev/tty.usbserial або COM8"
+}

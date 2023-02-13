@@ -8,40 +8,6 @@
 'use strict';
 
 systemDictionary = {
-	'elv-sup2 adapter settings': {
-		'en': 'Adapter settings for elv-sup2',
-		'de': 'Adaptereinstellungen für elv-sup2',
-		'ru': 'Настройки адаптера для elv-sup2',
-		'pt': 'Configurações do adaptador para elv-sup2',
-		'nl': 'Adapterinstellingen voor elv-sup2',
-		'fr': "Paramètres d'adaptateur pour elv-sup2",
-		'it': "Impostazioni dell'adattatore per elv-sup2",
-		'es': 'Ajustes del adaptador para elv-sup2',
-		'pl': 'Ustawienia adaptera dla elv-sup2',
-		'zh-cn': 'elv-sup2的适配器设置'
-	},
-	'option1': {
-		'en': 'option1',
-		'de': 'Option 1',
-		'ru': 'Опция 1',
-		'pt': 'Opção 1',
-		'nl': 'Optie 1',
-		'fr': 'Option 1',
-		'it': 'opzione 1',
-		'es': 'Opción 1',
-		'pl': 'opcja 1',
-		'zh-cn': '选项1'
-	},
-	'option2': {
-		'en': 'option2',
-		'de': 'Option 2',
-		'ru': 'вариант 2',
-		'pt': 'opção 2',
-		'nl': 'Optie 2',
-		'fr': 'Option 2',
-		'it': 'opzione 2',
-		'es': 'opcion 2',
-		'pl': 'Opcja 2',
-		'zh-cn': '选项2'
-	}
+    "Connection Identifier": {                        "en": "Connection Identifier",                            "de": "Verbindungskennung",                               "ru": "Идентификатор соединения",                         "pt": "Identificador de Conexão",                         "nl": "Verbindings-ID",                                   "fr": "Identifiant de connexion",                         "it": "Identificatore di connessione",                    "es": "Identificador de conexión",                        "pl": "Identyfikator połączenia",                         "uk": "Ідентифікатор підключення",                        "zh-cn": "连接标识符"},
+    "Serial Port Id for SUP2 access. Format: /dev/tty.usbserial or COM8": {"en": "Serial Port Id for SUP2 access. Format: /dev/tty.usbserial or COM8", "de": "Serial Port ID für SUP2-Zugriff. Format: /dev/tty.usbserial oder COM8", "ru": "Идентификатор последовательного порта для доступа к SUP2. Формат: /dev/tty.usbserial или COM8.", "pt": "ID da porta serial para acesso SUP2. Formato: /dev/tty.usbserial ou COM8", "nl": "Seriële poort-id voor SUP2-toegang. Formaat: /dev/tty.usbserial of COM8", "fr": "ID de port série pour l'accès SUP2. Format : /dev/tty.usbserial ou COM8", "it": "ID porta seriale per accesso SUP2. Formato: /dev/tty.usbserial o COM8", "es": "ID de puerto serie para acceso SUP2. Formato: /dev/tty.usbserial o COM8", "pl": "Identyfikator portu szeregowego dla dostępu SUP2. Format: /dev/tty.usbserial lub COM8", "uk": "Ідентифікатор послідовного порту для доступу до SUP2. Формат: /dev/tty.usbserial або COM8", "zh-cn": "SUP2 访问的串行端口 ID。格式：/dev/tty.usbserial 或 COM8"},
 };

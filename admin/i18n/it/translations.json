@@ -1,5 +1,4 @@
 {
-	"elv-sup2 adapter settings": "Impostazioni dell'adattatore per elv-sup2",
-	"option1": "opzione 1",
-	"option2": "opzione 2"
+    "Connection Identifier": "Identificatore di connessione",
+    "Serial Port Id for SUP2 access. Format: /dev/tty.usbserial or COM8": "ID porta seriale per accesso SUP2. Formato: /dev/tty.usbserial o COM8"
 }
