@@ -98,7 +98,7 @@
     ]
   },
   "native": {
-    "connectionIdentifier": "COM8",
+    "connectionIdentifier": "",
     "baudrate": "19200"
   },
   "objects": [],

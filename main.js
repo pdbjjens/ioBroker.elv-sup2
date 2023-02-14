@@ -21,7 +21,7 @@ const Debug = false;
 const channelId = 'configuration'; // SUP config channel
 let connectTimeout;
 let checkConnectionTimer;
-let refreshTimeout;
+//let refreshTimeout;
 let timeoutId;
 /**
  * No more than 1 concurrent tasks with
@@ -257,8 +257,8 @@ class ElvSup2 extends utils.Adapter {
 		checkConnectionTimer && clearTimeout(checkConnectionTimer);
 		checkConnectionTimer = null;
 
-		refreshTimeout && clearTimeout(refreshTimeout);
-		refreshTimeout = null;
+		//refreshTimeout && clearTimeout(refreshTimeout);
+		//refreshTimeout = null;
 
 		timeoutId && clearTimeout(timeoutId);
 		timeoutId = null;
@@ -299,11 +299,6 @@ class ElvSup2 extends utils.Adapter {
 		} catch (err) {
 			this.log.error('Cannot process state change: ' + err.message);
 		}
-		/*		clearTimeout(this.refreshTimeout);
-		this.refreshTimeout = setTimeout(async () => {
-			await this.updateDevice();
-		}, 20 * 1000);
-		*/
 	}
 
 
