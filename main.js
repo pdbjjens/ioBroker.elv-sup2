@@ -263,13 +263,10 @@ class ElvSup2 extends utils.Adapter {
 		timeoutId && clearTimeout(timeoutId);
 		timeoutId = null;
 
-		if (sup) {
-			try {
-				await sup.close();
-				//sup = null;
-			} catch (e) {
-				this.log.error('Cannot close serial port: ' + e.message);
-			}
+		if (sup && sup.isOpen) {
+			sup.close((e) => {
+				if (e) this.log.error('Cannot close serial port: ' + e.message);
+			});
 		}
 		callback();
 	}
