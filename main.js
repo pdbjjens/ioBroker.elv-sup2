@@ -114,9 +114,12 @@ class ElvSup2 extends utils.Adapter {
 		let portOk = true;
 		try {
 			portOk = await this.checkPort();
+			this.log.info('portOK: ' + portOk);
 		} catch (err) {
-			this.log.error('Cannot open port: ' + err);
-			this.terminate ('Terminating due to: ' + err);
+			portOk = false;
+			this.log.info('portOK: ' + portOk);
+			this.log.error('Cannot open port: ' + err.message);
+			this.terminate ('Terminating due to: ' + err.message);
 		}
 
 		if (portOk) {
@@ -126,7 +129,7 @@ class ElvSup2 extends utils.Adapter {
 				await this.initObjects();
 				await this.subscribeStatesAsync(channelId + '.*');
 			} catch (err) {
-				this.log.error('Cannot connect to SUP: ' + err);
+				this.log.error('Cannot connect to SUP: ' + err.message);
 			}
 		}
 
