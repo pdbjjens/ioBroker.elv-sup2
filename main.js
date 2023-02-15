@@ -111,16 +111,24 @@ class ElvSup2 extends utils.Adapter {
 
 		// Reset the connection indicator during startup
 		this.setState('info.connection', false, true);
-
+		let portOk = true;
 		try {
-			await this.checkPort();
-			await this.connect();
-			await this.initObjects();
-			await this.subscribeStatesAsync(channelId + '.*');
+			portOk = await this.checkPort();
 		} catch (err) {
 			this.log.error('Cannot open port: ' + err);
+			this.terminate ('Terminating due to: ' + err);
 		}
 
+		if (portOk) {
+			try {
+				//await this.checkPort();
+				await this.connect();
+				await this.initObjects();
+				await this.subscribeStatesAsync(channelId + '.*');
+			} catch (err) {
+				this.log.error('Cannot connect to SUP: ' + err);
+			}
+		}
 
 
 	}
@@ -147,10 +155,12 @@ class ElvSup2 extends utils.Adapter {
 			sPort.open();
 
 			sPort.on('error', (err) => {
-				sPort.isOpen && sPort.close(()=>{
-					//this.log.debug('Checkport Error: ' + err);
-					reject (err);
-				});
+				if (sPort.isOpen) {
+					sPort.flush(()=>{
+						sPort.close();
+					});
+				}
+				reject (err);
 			});
 
 			sPort.on( 'open', () => {
