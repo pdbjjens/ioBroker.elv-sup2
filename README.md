@@ -17,13 +17,18 @@ This adapter connects the ELV HQ-Stereo-FM-Testgenerator SUP2 to ioBroker via US
 ## Configuration hints
 
 The only configuration parameter is the serial port Id of the port to which the SUP2 is connected.
-The format should be e.g.: /dev/tty.USBx on Linux or COMx on Windows-based ioBroker installations.
+The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBroker installations.
 
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+* (pdbjjens) First release
+
 ### 0.0.3-alpha.0 (2023-02-13)
 
 * (pdbjjens) pre-release
