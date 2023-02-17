@@ -119,7 +119,7 @@ class ElvSup2 extends utils.Adapter {
 			portOk = false;
 			//this.log.info('portOK: ' + portOk);
 			this.log.error('Cannot open port: ' + err.message);
-			this.terminate ('Reason: ' + err.message, 11);
+			//this.terminate ('Reason: ' + err.message, 11);
 		}
 
 		if (portOk) {
