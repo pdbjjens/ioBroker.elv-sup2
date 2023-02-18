@@ -139,7 +139,7 @@ class ElvSup2 extends utils.Adapter {
 		return new Promise((resolve,reject) => {
 			const { SerialPort } = require('serialport');
 
-			if (!this.config.connectionIdentifier) {
+			if (this.config.connectionIdentifier === '') {
 				reject (new Error ('Serial port is not selected'));
 			}
 			if (!this.config.connectionIdentifier.match(serialformat)) {
