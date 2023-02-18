@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "elv-sup2",
-    "version": "0.0.4-alpha.0",
+    "version": "0.0.4",
     "news": {
+      "0.0.4": {
+        "en": "Second release",
+        "de": "Zweite Veröffentlichung",
+        "ru": "Второй релиз",
+        "pt": "Segunda versão",
+        "nl": "Vertaling:",
+        "fr": "Deuxième sortie",
+        "it": "Seconda release",
+        "es": "Segunda liberación",
+        "pl": "Drugie wydanie",
+        "uk": "Другий реліз",
+        "zh-cn": "第二次释放"
+      },
       "0.0.4-alpha.0": {
         "en": "Second pre-release",
         "de": "Zweite Vor-Release",

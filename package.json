@@ -1,6 +1,6 @@
 {
   "name": "iobroker.elv-sup2",
-  "version": "0.0.4-alpha.0",
+  "version": "0.0.4",
   "description": "Connects ELV SUP2 to ioBroker",
   "author": {
     "name": "pdbjjens",
