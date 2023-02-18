@@ -111,7 +111,7 @@ class ElvSup2 extends utils.Adapter {
 
 		// Reset the connection indicator during startup
 		this.setState('info.connection', false, true);
-		let portOk = true;
+		let portOk = false;
 		try {
 			portOk = await this.checkPort();
 			//this.log.info('portOK: ' + portOk);
@@ -119,7 +119,7 @@ class ElvSup2 extends utils.Adapter {
 			portOk = false;
 			//this.log.info('portOK: ' + portOk);
 			this.log.error('Cannot open port: ' + err.message);
-			//this.terminate ('Reason: ' + err.message, 11);
+			return;
 		}
 
 		if (portOk) {
