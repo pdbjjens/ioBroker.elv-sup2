@@ -158,37 +158,36 @@ class ElvSup2 extends utils.Adapter {
 
 					if (!this.config.connectionIdentifier) {
 						reject (new Error ('Serial port is not selected. Available ports: ' + JSON.stringify(foundPorts)));
-					}
-					if (!this.config.connectionIdentifier.match(serialformat)) {
-						reject (new Error ('Serial port ID is not valid. Format: /dev/ttyUSBserial or COMx. \nAvailable ports: ' + JSON.stringify(foundPorts)));
-					}
+					} else if (!this.config.connectionIdentifier.match(serialformat)) {
+						reject (new Error ('Serial port ID is not valid. Format: /dev/ttyXXX or COMx. Available ports: ' + JSON.stringify(foundPorts)));
+					} else {
+						const sPort = new SerialPort({
+							path: this.config.connectionIdentifier,
+							baudRate: parseInt(this.config.baudrate, 10),
+							autoOpen: false
+						});
 
-					const sPort = new SerialPort({
-						path: this.config.connectionIdentifier,
-						baudRate: parseInt(this.config.baudrate, 10),
-						autoOpen: false
-					});
+						sPort.open();
 
-					sPort.open();
+						sPort.on('error', (err) => {
+							if (sPort.isOpen) {
+								sPort.flush(()=>{
+									sPort.close();
+								});
+							}
+							err.message = err.message + '. Available ports: ' + JSON.stringify(foundPorts);
+							reject (err);
+						});
 
-					sPort.on('error', (err) => {
-						if (sPort.isOpen) {
-							sPort.flush(()=>{
-								sPort.close();
-							});
-						}
-						err.message = err.message + '. Available ports: ' + JSON.stringify(foundPorts);
-						reject (err);
-					});
-
-					sPort.on( 'open', () => {
+						sPort.on( 'open', () => {
 						//this.log.debug('sPort opened: ' + this.config.connectionIdentifier);
-						sPort.isOpen && sPort.flush(()=>{
-							sPort.close(()=>{
-								resolve (true);
+							sPort.isOpen && sPort.flush(()=>{
+								sPort.close(()=>{
+									resolve (true);
+								});
 							});
 						});
-					});
+					}
 				}));
 		});
 	}
