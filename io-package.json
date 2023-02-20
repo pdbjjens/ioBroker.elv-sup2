@@ -120,7 +120,7 @@
     "platform": "Javascript/Node.js",
     "main": "main.js",
     "icon": "elv-sup2.png",
-    "enabled": true,
+    "enabled": false,
     "extIcon": "https://raw.githubusercontent.com/pdbjjens/ioBroker.elv-sup2/master/admin/elv-sup2.png",
     "readme": "https://github.com/pdbjjens/ioBroker.elv-sup2/blob/master/README.md",
     "loglevel": "info",

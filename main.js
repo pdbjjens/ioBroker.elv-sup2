@@ -17,7 +17,7 @@ const { Queue } = require('async-await-queue');
 
 let sup = {};
 const objects   = {};
-const Debug = false;
+const Debug = true;
 const channelId = 'configuration'; // SUP config channel
 let connectTimeout;
 let checkConnectionTimer;
@@ -111,25 +111,28 @@ class ElvSup2 extends utils.Adapter {
 
 		// Reset the connection indicator during startup
 		this.setState('info.connection', false, true);
-		let portOk = false;
+		let portOk = null;
 		try {
 			portOk = await this.checkPort();
 			//this.log.info('portOK: ' + portOk);
 		} catch (err) {
-			portOk = false;
+			//portOk = false;
 			//this.log.info('portOK: ' + portOk);
-			this.log.error('Cannot open port: ' + err.message);
+			this.log.error('Cannot open serial port: ' + err.message);
 			return;
-		}
+		} finally { () => {
 
-		if (portOk) {
-			try {
-				await this.connect();
-				await this.initObjects();
-				await this.subscribeStatesAsync(channelId + '.*');
-			} catch (err) {
-				this.log.error('Cannot connect to SUP: ' + err.message);
+			if (portOk) {
+				try {
+					this.connect()
+						.then (()=> this.initObjects()
+							.then (() => this.subscribeStatesAsync(channelId + '.*'))
+						);
+				} catch (err) {
+					this.log.error('Cannot connect to SUP: ' + err.message);
+				}
 			}
+		};
 		}
 	}
 
@@ -139,38 +142,58 @@ class ElvSup2 extends utils.Adapter {
 		return new Promise((resolve,reject) => {
 			const { SerialPort } = require('serialport');
 
-			if (this.config.connectionIdentifier === '') {
-				reject (new Error ('Serial port is not selected'));
-			}
-			if (!this.config.connectionIdentifier.match(serialformat)) {
-				reject (new Error ('Serial port ID not valid. Format: /dev/tty.usbserial or COM8'));
-			}
+			const foundPorts = [];
 
-			const sPort = new SerialPort({
-				path: this.config.connectionIdentifier,
-				baudRate: parseInt(this.config.baudrate, 10),
-				autoOpen: false
-			});
+			// list all available ports
+			SerialPort.list()
+				.then((ports) => {
+					// iterate through ports
+					for (let i = 0; i < ports.length; i += 1) {
+						if (Debug) this.log.debug ('Found serial port: ' + JSON.stringify(ports[i]));
+						foundPorts.push(ports[i].path);
+					}
+				})
+				.catch (( (error) => {
+					if (Debug) this.log.debug('Serial port list failed: ' + error);
+					reject (error);
+				}))
+				.finally (( () => {
+					if (Debug) this.log.info ('Serial ports found: ' + JSON.stringify(foundPorts));
 
-			sPort.open();
+					if (!this.config.connectionIdentifier) {
+						reject (new Error ('Serial port is not selected. Available ports: ' + JSON.stringify(foundPorts)));
+					}
+					if (!this.config.connectionIdentifier.match(serialformat)) {
+						reject (new Error ('Serial port ID is not valid. Format: /dev/ttyUSBserial or COMx. \nAvailable ports: ' + JSON.stringify(foundPorts)));
+					}
 
-			sPort.on('error', (err) => {
-				if (sPort.isOpen) {
-					sPort.flush(()=>{
-						sPort.close();
+					const sPort = new SerialPort({
+						path: this.config.connectionIdentifier,
+						baudRate: parseInt(this.config.baudrate, 10),
+						autoOpen: false
 					});
-				}
-				reject (err);
-			});
 
-			sPort.on( 'open', () => {
-				//this.log.debug('sPort opened: ' + this.config.connectionIdentifier);
-				sPort.isOpen && sPort.flush(()=>{
-					sPort.close(()=>{
-						resolve (true);
+					sPort.open();
+
+					sPort.on('error', (err) => {
+						if (sPort.isOpen) {
+							sPort.flush(()=>{
+								sPort.close();
+							});
+						}
+						err.message = err.message + '. Available ports: ' + JSON.stringify(foundPorts);
+						reject (err);
 					});
-				});
-			});
+
+					sPort.on( 'open', () => {
+						//this.log.debug('sPort opened: ' + this.config.connectionIdentifier);
+						sPort.isOpen && sPort.flush(()=>{
+							sPort.close(()=>{
+								resolve (foundPorts);
+							});
+						});
+					});
+				}));
 		});
 	}
 
