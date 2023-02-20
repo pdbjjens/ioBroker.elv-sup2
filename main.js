@@ -17,7 +17,7 @@ const { Queue } = require('async-await-queue');
 
 let sup = {};
 const objects   = {};
-const Debug = true;
+const Debug = false;
 const channelId = 'configuration'; // SUP config channel
 let connectTimeout;
 let checkConnectionTimer;
@@ -111,28 +111,24 @@ class ElvSup2 extends utils.Adapter {
 
 		// Reset the connection indicator during startup
 		this.setState('info.connection', false, true);
-		let portOk = null;
+		let portOk = true;
 		try {
 			portOk = await this.checkPort();
 			//this.log.info('portOK: ' + portOk);
 		} catch (err) {
-			//portOk = false;
+			portOk = false;
 			//this.log.info('portOK: ' + portOk);
 			this.log.error('Cannot open serial port: ' + err.message);
 			return;
-		} finally { () => {
+		}
 
-			if (portOk) {
-				try {
-					this.connect()
-						.then (()=> this.initObjects()
-							.then (() => this.subscribeStatesAsync(channelId + '.*'))
-						);
-				} catch (err) {
+		if (portOk) {
+			this.connect()
+				.then (()=> this.initObjects()
+					.then (() => this.subscribeStatesAsync(channelId + '.*')))
+				.catch ((err) => {
 					this.log.error('Cannot connect to SUP: ' + err.message);
-				}
-			}
-		};
+				});
 		}
 	}
 
@@ -189,7 +185,7 @@ class ElvSup2 extends utils.Adapter {
 						//this.log.debug('sPort opened: ' + this.config.connectionIdentifier);
 						sPort.isOpen && sPort.flush(()=>{
 							sPort.close(()=>{
-								resolve (foundPorts);
+								resolve (true);
 							});
 						});
 					});
@@ -222,13 +218,13 @@ class ElvSup2 extends utils.Adapter {
 				if (err) {
 					connectTimeout = setInterval(() => {
 						this.sup = null;
-						this.log.error(err + ' \n - Trying to reconnect Sup... ');
+						this.log.error(err + ' - Trying to reconnect Sup... ');
 						this.connect().then ( () => {
 							clearInterval(connectTimeout);
 							connectTimeout = null;
 						})
 							.catch ( (error) => {
-								if (Debug) this.log.debug('Reconnect failed: ' + error);
+								this.log.error(error + ' - Trying to reconnect Sup... ');
 							});
 					}, 10000);
 				}
@@ -242,7 +238,7 @@ class ElvSup2 extends utils.Adapter {
 
 			sup.on('error', (err) => {
 				this.setState('info.connection', false, true);
-				this.log.error('Error on sup connection: ' +  err);
+				//this.log.error('Error on sup connection: ' +  err.message);
 				reject (err);
 			});
 		});
@@ -444,7 +440,7 @@ class ElvSup2 extends utils.Adapter {
 
 	waitForData () {
 		return new Promise((resolve, reject) => {
-			timeoutId = setTimeout(() => reject(new Error ('Command Response Timeout')), 2000);
+			timeoutId = setTimeout(() => reject(new Error ('Command Response Timeout. Wrong serial port?')), 2000);
 
 			sup.on('data', (data) => {
 				clearTimeout(timeoutId);
@@ -523,7 +519,7 @@ class ElvSup2 extends utils.Adapter {
 			supConfig = await this.getSupConfig();
 			if (Debug) this.log.debug('In initObjects: ' + JSON.stringify(supConfig));
 		} catch (err) {
-			this.log.error(err);
+			if(err)	throw err; //rethrow
 		}
 		if (!objects[this.namespace + '.' + channelId]) { //Channel does not yet exist
 			//create new channel
