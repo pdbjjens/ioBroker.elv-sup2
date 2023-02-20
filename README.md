@@ -24,8 +24,7 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 0.0.5 (2023-02-20)
 
 * (pdbjjens) List available serial ports
 * (pdbjjens) Adapter not enabled on startup
