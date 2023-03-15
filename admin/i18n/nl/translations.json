@@ -1,4 +1,5 @@
 {
+    "Enter serial port ID": "Voer de seriële poort-ID in",
     "Connection Identifier": "Verbindings-ID",
-    "Serial Port Id for SUP2 access. Format: /dev/tty.usbserial or COM8": "Seriële poort-id voor SUP2-toegang. Formaat: /dev/tty.usbserial of COM8"
+    "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8": "Seriële poort-id voor SUP2-toegang. Formaat: /dev/ttyUSBserial of COM8"
 }

@@ -1,0 +1,20 @@
+{
+    "i18n": true,
+    "type": "tabs",
+    "items": {
+        "_options": {
+            "type": "panel",
+            "label": "Enter serial port ID",
+            "items": {
+                "connectionIdentifier": {
+                    "type": "text",
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 6,
+                    "label": "Connection Identifier",
+                    "help": "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8"
+                }
+            }
+        }
+    }
+}

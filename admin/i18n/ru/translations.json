@@ -1,4 +1,5 @@
 {
+    "Enter serial port ID": "Введите идентификатор последовательного порта",
     "Connection Identifier": "Идентификатор соединения",
-    "Serial Port Id for SUP2 access. Format: /dev/tty.usbserial or COM8": "Идентификатор последовательного порта для доступа к SUP2. Формат: /dev/tty.usbserial или COM8."
+    "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8": "Идентификатор последовательного порта для доступа к SUP2. Формат: /dev/ttyUSBserial или COM8."
 }

@@ -1,4 +1,5 @@
 {
+    "Enter serial port ID": "输入串口ID",
     "Connection Identifier": "连接标识符",
-    "Serial Port Id for SUP2 access. Format: /dev/tty.usbserial or COM8": "SUP2 访问的串行端口 ID。格式：/dev/tty.usbserial 或 COM8"
+    "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8": "SUP2 访问的串行端口 ID。格式：/dev/ttyUSBserial 或 COM8"
 }

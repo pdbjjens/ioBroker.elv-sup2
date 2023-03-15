@@ -1,180 +1,188 @@
 {
-  "common": {
-    "name": "elv-sup2",
-    "version": "0.0.6",
-    "news": {
-      "0.0.6": {
-        "en": "Third release",
-        "de": "Dritte Pressemitteilung",
-        "ru": "Третий релиз",
-        "pt": "Terceiro lançamento",
-        "nl": "Derde",
-        "fr": "Troisième libération",
-        "it": "Terza release",
-        "es": "Tercera liberación",
-        "pl": "Trzecie wydanie",
-        "uk": "Третій реліз",
-        "zh-cn": "第三次释放"
-      },
-      "0.0.5": {
-        "en": "List available serial ports\nAdapter not enabled on startup",
-        "de": "Verfügbare serielle Ports\nAdapter nicht aktiviert beim Start",
-        "ru": "Список доступные серийные порты\nАдаптер не включен при запуске",
-        "pt": "Lista de portas seriais disponíveis\nAdapter não ativado na inicialização",
-        "nl": "List beschikbare serie havens\nAdapter niet in staat om te beginnen",
-        "fr": "Liste des ports série disponibles\nAdaptateur non activé au démarrage",
-        "it": "Elenco delle porte seriali disponibili\nAdattatore non abilitato all'avvio",
-        "es": "Lista de puertos serie disponibles\nAdaptador no habilitado para la puesta en marcha",
-        "pl": "Lista portów seryjnych\nAdapter nie pozwalał na startup",
-        "uk": "Перелік доступних серійних портів\nАдаптер не ввімкнений на старті",
-        "zh-cn": "现有港口名单\n启动后无法取得成功"
-      },
-      "0.0.4": {
-        "en": "Second release",
-        "de": "Zweite Veröffentlichung",
-        "ru": "Второй релиз",
-        "pt": "Segunda versão",
-        "nl": "Vertaling:",
-        "fr": "Deuxième sortie",
-        "it": "Seconda release",
-        "es": "Segunda liberación",
-        "pl": "Drugie wydanie",
-        "uk": "Другий реліз",
-        "zh-cn": "第二次释放"
-      },
-      "0.0.4-alpha.0": {
-        "en": "Second pre-release",
-        "de": "Zweite Vor-Release",
-        "ru": "Второй предрелиз",
-        "pt": "Segundo pré-lançamento",
-        "nl": "Tweede voorwaardelijke vrijlating",
-        "fr": "Second pre-release",
-        "it": "Secondo pre-release",
-        "es": "Segunda liberación previa",
-        "pl": "Second prerelease",
-        "uk": "Другий до релізу",
-        "zh-cn": "第二期采购"
-      },
-      "0.0.3": {
-        "en": "First release",
-        "de": "Erste Veröffentlichung",
-        "ru": "Первый выпуск",
-        "pt": "Primeiro lançamento",
-        "nl": "Vertaling:",
-        "fr": "Premier communiqué",
-        "it": "Prima release",
-        "es": "Primera liberación",
-        "pl": "Pierwsze wydanie",
-        "uk": "Перший реліз",
-        "zh-cn": "第一次释放"
-      },
-      "0.0.3-alpha.0": {
-        "en": "pre-release",
-        "de": "vor-release",
-        "ru": "pre-релиз",
-        "pt": "pré-lançamento",
-        "nl": "vertaling:",
-        "fr": "pre-release",
-        "it": "pre-release",
-        "es": "pre-release",
-        "pl": "prerelease",
-        "uk": "до релізу",
-        "zh-cn": "采购前"
-      },
-      "0.0.2": {
-        "en": "initial release",
-        "de": "erstausstrahlung",
-        "ru": "начальный выпуск",
-        "pt": "lançamento inicial",
-        "nl": "niet",
-        "fr": "initial release",
-        "it": "rilascio iniziale",
-        "es": "liberación inicial",
-        "pl": "pierwsze wydanie",
-        "uk": "початковий реліз",
-        "zh-cn": "初步释放"
-      }
+    "common": {
+        "name": "elv-sup2",
+        "version": "0.0.6",
+        "news": {
+            "0.0.6": {
+                "en": "Third release",
+                "de": "Dritte Pressemitteilung",
+                "ru": "Третий релиз",
+                "pt": "Terceiro lançamento",
+                "nl": "Derde",
+                "fr": "Troisième libération",
+                "it": "Terza release",
+                "es": "Tercera liberación",
+                "pl": "Trzecie wydanie",
+                "uk": "Третій реліз",
+                "zh-cn": "第三次释放"
+            },
+            "0.0.5": {
+                "en": "List available serial ports\nAdapter not enabled on startup",
+                "de": "Verfügbare serielle Ports\nAdapter nicht aktiviert beim Start",
+                "ru": "Список доступные серийные порты\nАдаптер не включен при запуске",
+                "pt": "Lista de portas seriais disponíveis\nAdapter não ativado na inicialização",
+                "nl": "List beschikbare serie havens\nAdapter niet in staat om te beginnen",
+                "fr": "Liste des ports série disponibles\nAdaptateur non activé au démarrage",
+                "it": "Elenco delle porte seriali disponibili\nAdattatore non abilitato all'avvio",
+                "es": "Lista de puertos serie disponibles\nAdaptador no habilitado para la puesta en marcha",
+                "pl": "Lista portów seryjnych\nAdapter nie pozwalał na startup",
+                "uk": "Перелік доступних серійних портів\nАдаптер не ввімкнений на старті",
+                "zh-cn": "现有港口名单\n启动后无法取得成功"
+            },
+            "0.0.4": {
+                "en": "Second release",
+                "de": "Zweite Veröffentlichung",
+                "ru": "Второй релиз",
+                "pt": "Segunda versão",
+                "nl": "Vertaling:",
+                "fr": "Deuxième sortie",
+                "it": "Seconda release",
+                "es": "Segunda liberación",
+                "pl": "Drugie wydanie",
+                "uk": "Другий реліз",
+                "zh-cn": "第二次释放"
+            },
+            "0.0.4-alpha.0": {
+                "en": "Second pre-release",
+                "de": "Zweite Vor-Release",
+                "ru": "Второй предрелиз",
+                "pt": "Segundo pré-lançamento",
+                "nl": "Tweede voorwaardelijke vrijlating",
+                "fr": "Second pre-release",
+                "it": "Secondo pre-release",
+                "es": "Segunda liberación previa",
+                "pl": "Second prerelease",
+                "uk": "Другий до релізу",
+                "zh-cn": "第二期采购"
+            },
+            "0.0.3": {
+                "en": "First release",
+                "de": "Erste Veröffentlichung",
+                "ru": "Первый выпуск",
+                "pt": "Primeiro lançamento",
+                "nl": "Vertaling:",
+                "fr": "Premier communiqué",
+                "it": "Prima release",
+                "es": "Primera liberación",
+                "pl": "Pierwsze wydanie",
+                "uk": "Перший реліз",
+                "zh-cn": "第一次释放"
+            },
+            "0.0.3-alpha.0": {
+                "en": "pre-release",
+                "de": "vor-release",
+                "ru": "pre-релиз",
+                "pt": "pré-lançamento",
+                "nl": "vertaling:",
+                "fr": "pre-release",
+                "it": "pre-release",
+                "es": "pre-release",
+                "pl": "prerelease",
+                "uk": "до релізу",
+                "zh-cn": "采购前"
+            },
+            "0.0.2": {
+                "en": "initial release",
+                "de": "erstausstrahlung",
+                "ru": "начальный выпуск",
+                "pt": "lançamento inicial",
+                "nl": "niet",
+                "fr": "initial release",
+                "it": "rilascio iniziale",
+                "es": "liberación inicial",
+                "pl": "pierwsze wydanie",
+                "uk": "початковий реліз",
+                "zh-cn": "初步释放"
+            }
+        },
+        "title": "ELV SUP2",
+        "titleLang": {
+            "en": "ELV SUP2",
+            "de": "ELV SUP2",
+            "ru": "ЭЛВ СУП2",
+            "pt": "ELV SUP2",
+            "nl": "ELV SUP2",
+            "fr": "ELV SUP2",
+            "it": "ELV SUP2",
+            "es": "ELV SUP2",
+            "pl": "ELV SUP2",
+            "zh-cn": "低电压 SUP2",
+            "uk": "ELV SUP2"
+        },
+        "desc": {
+            "en": "Connects ELV SUP2 to ioBroker",
+            "de": "Verbindet ELV SUP2 mit ioBroker",
+            "ru": "Подключает ELV SUP2 к ioBroker",
+            "pt": "Conecta ELV SUP2 ao ioBroker",
+            "nl": "Verbindt ELV SUP2 met ioBroker",
+            "fr": "Connecte ELV SUP2 à ioBroker",
+            "it": "Collega ELV SUP2 a ioBroker",
+            "es": "Conecta ELV SUP2 a ioBroker",
+            "pl": "Łączy ELV SUP2 z ioBroker",
+            "zh-cn": "将 ELV SUP2 连接到 ioBroker",
+            "uk": "Підключає ELV SUP2 до ioBroker"
+        },
+        "authors": [
+            "pdbjjens <jjensen@t-online.de>"
+        ],
+        "keywords": [
+            "ELV",
+            "SUP2"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "elv-sup2.png",
+        "enabled": false,
+        "extIcon": "https://raw.githubusercontent.com/pdbjjens/ioBroker.elv-sup2/master/admin/elv-sup2.png",
+        "readme": "https://github.com/pdbjjens/ioBroker.elv-sup2/blob/master/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "multimedia",
+        "compact": true,
+        "connectionType": "local",
+        "dataSource": "poll",
+        "materialize": true,
+        "adminUI": {
+            "config": "json"
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=4.0.15"
+            }
+        ],
+        "globalDependencies": [
+            {
+                "admin": ">=5.2.28"
+            }
+        ]
     },
-    "title": "ELV SUP2",
-    "titleLang": {
-      "en": "ELV SUP2",
-      "de": "ELV SUP2",
-      "ru": "ЭЛВ СУП2",
-      "pt": "ELV SUP2",
-      "nl": "ELV SUP2",
-      "fr": "ELV SUP2",
-      "it": "ELV SUP2",
-      "es": "ELV SUP2",
-      "pl": "ELV SUP2",
-      "zh-cn": "低电压 SUP2",
-      "uk": "ELV SUP2"
+    "native": {
+        "connectionIdentifier": "",
+        "baudrate": "19200"
     },
-    "desc": {
-      "en": "Connects ELV SUP2 to ioBroker",
-      "de": "Verbindet ELV SUP2 mit ioBroker",
-      "ru": "Подключает ELV SUP2 к ioBroker",
-      "pt": "Conecta ELV SUP2 ao ioBroker",
-      "nl": "Verbindt ELV SUP2 met ioBroker",
-      "fr": "Connecte ELV SUP2 à ioBroker",
-      "it": "Collega ELV SUP2 a ioBroker",
-      "es": "Conecta ELV SUP2 a ioBroker",
-      "pl": "Łączy ELV SUP2 z ioBroker",
-      "zh-cn": "将 ELV SUP2 连接到 ioBroker",
-      "uk": "Підключає ELV SUP2 до ioBroker"
-    },
-    "authors": [
-      "pdbjjens <jjensen@t-online.de>"
-    ],
-    "keywords": [
-      "ELV",
-      "SUP2"
-    ],
-    "license": "MIT",
-    "platform": "Javascript/Node.js",
-    "main": "main.js",
-    "icon": "elv-sup2.png",
-    "enabled": false,
-    "extIcon": "https://raw.githubusercontent.com/pdbjjens/ioBroker.elv-sup2/master/admin/elv-sup2.png",
-    "readme": "https://github.com/pdbjjens/ioBroker.elv-sup2/blob/master/README.md",
-    "loglevel": "info",
-    "mode": "daemon",
-    "type": "multimedia",
-    "compact": true,
-    "connectionType": "local",
-    "dataSource": "poll",
-    "materialize": true,
-    "dependencies": [
-      {
-        "js-controller": ">=2.0.0"
-      }
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "Device or service connected",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
     ]
-  },
-  "native": {
-    "connectionIdentifier": "",
-    "baudrate": "19200"
-  },
-  "objects": [],
-  "instanceObjects": [
-    {
-      "_id": "info",
-      "type": "channel",
-      "common": {
-        "name": "Information"
-      },
-      "native": {}
-    },
-    {
-      "_id": "info.connection",
-      "type": "state",
-      "common": {
-        "role": "indicator.connected",
-        "name": "Device or service connected",
-        "type": "boolean",
-        "read": true,
-        "write": false,
-        "def": false
-      },
-      "native": {}
-    }
-  ]
 }

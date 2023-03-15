@@ -214,7 +214,7 @@ class ElvSup2 extends utils.Adapter {
 			sup.on('close', (err) => {
 				this.setState('info.connection', false, true);
 
-				if (err) {
+				if (err && err.disconnect === true) {
 					connectTimeout = setInterval(() => {
 						this.sup = null;
 						this.log.error(err + ' - Trying to reconnect Sup... ');
@@ -937,17 +937,38 @@ class ElvSup2 extends utils.Adapter {
 	//  * Using this method requires "common.messagebox" property to be set to true in io-package.json
 	//  * @param {ioBroker.Message} obj
 	//  */
-	// onMessage(obj) {
-	// 	if (typeof obj === 'object' && obj.message) {
-	// 		if (obj.command === 'send') {
-	// 			// e.g. send email or pushover or whatever
-	// 			this.log.info('send command');
-
-	// 			// Send response in callback if required
-	// 			if (obj.callback) this.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-	// 		}
-	// 	}
-	// }
+	/*
+	onMessage(obj) {
+		if (typeof obj === 'object' && obj.message) {
+			switch (obj.command) {
+				case 'getSerPorts':
+					if (obj.callback) {
+						try {
+							const {SerialPort} = require('serialport');
+							if (SerialPort) {
+							// read all found serial ports
+								SerialPort.list()
+									.then(ports => {
+										this.log.info('List of port: ' + JSON.stringify(ports));
+										this.sendTo(obj.from, obj.command, ports.map(item => ({label: item.path, value: item.path})), obj.callback);
+									})
+									.catch(e => {
+										this.sendTo(obj.from, obj.command, [], obj.callback);
+										this.log.error(e)
+									});
+							} else {
+								this.log.warn('Module serialport is not available');
+								this.sendTo(obj.from, obj.command, [{label: 'Not available', value: ''}], obj.callback);
+							}
+						} catch (e) {
+							this.sendTo(obj.from, obj.command, [{label: 'Not available', value: ''}], obj.callback);
+						}
+					}
+					break;
+			}
+		}
+	}
+	*/
 }
 
 if (require.main !== module) {
