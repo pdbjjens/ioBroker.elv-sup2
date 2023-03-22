@@ -27,6 +27,7 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 ### **WORK IN PROGRESS**
 
 * (pdbjjens) New: json config UI
+* (pdbjjens) New: List of available serial ports in config UI
 
 ### 0.0.6 (2023-02-20)
 

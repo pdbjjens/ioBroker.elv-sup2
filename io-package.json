@@ -142,6 +142,8 @@
         "compact": true,
         "connectionType": "local",
         "dataSource": "poll",
+        "messagebox": true,
+        "subscribe": "messagebox",
         "materialize": true,
         "adminUI": {
             "config": "json"
@@ -159,6 +161,7 @@
     },
     "native": {
         "connectionIdentifier": "",
+        "serialPortName": "COM1",
         "baudrate": "19200"
     },
     "objects": [],
