@@ -15,6 +15,9 @@
     "type": "git",
     "url": "https://github.com/pdbjjens/ioBroker.elv-sup2"
   },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "dependencies": {
     "@iobroker/adapter-core": "^2.6.8",
     "@iobroker/types": "^5.0.17",
