@@ -792,7 +792,7 @@ class ElvSup2 extends utils.Adapter {
 			if (!obj) { //object does not exist - create it!
 				try {
 					await this.setForeignObjectAsync(newState._id, newState);
-					this.log.info(`Object ${newState._id} created`);
+					this.log.debug(`Object ${newState._id} created`);
 				} catch (err) {
 					return (err);
 				}
