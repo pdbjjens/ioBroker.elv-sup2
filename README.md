@@ -24,7 +24,7 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.0.7 (2024-01-25)
 
 * (pdbjjens) New: json config UI
 * (pdbjjens) New: List of available serial ports in config UI
@@ -45,18 +45,6 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 ### 0.0.4-alpha.0 (2023-02-17)
 
 * (pdbjjens) Second pre-release
-
-### 0.0.3 (2023-02-17)
-
-* (pdbjjens) First release
-
-### 0.0.3-alpha.0 (2023-02-13)
-
-* (pdbjjens) pre-release
-
-### 0.0.2 (2023-02-13)
-
-* (pdbjjens) initial release
 
 ## Legal Notices
 
