@@ -7,17 +7,10 @@
             "label": "Enter serial port ID",
             "items": {
                 "connectionIdentifier": {
-                    "type": "text",
-                    "sm": 12,
-                    "md": 6,
-                    "lg": 6,
-                    "label": "Connection Identifier",
-                    "help": "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8"
-                },
-                "serialPortName": {
                     "newLine": true,
                     "type": "selectSendTo",
                     "command": "listPorts",
+                    "manual": true,
                     "label": "Serial Port Name",
                     "help": "Available Serial Ports",
                     "noTranslation": true,
