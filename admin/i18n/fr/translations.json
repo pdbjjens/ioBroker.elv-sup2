@@ -1,5 +1,9 @@
 {
-    "Enter serial port ID": "Entrez l'ID du port série",
-    "Connection Identifier": "Identifiant de connexion",
-    "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8": "ID de port série pour l'accès SUP2. Format : /dev/ttyUSBserial ou COM8"
+    "Basic configuration for SUP2 access": "Configuration de base pour l'accès SUP2",
+    "Serial Port Id": "ID du port série",
+    "Select the Serial Port Id. For manual input stop the adapter": "Sélectionnez l'ID du port série. Pour la saisie manuelle, arrêtez l'adaptateur",
+    "Format: /dev/ttyUSBserial or COMx": "Format : /dev/ttyUSBserial ou COMx",
+    "Baudrate": "Débit en bauds",
+    "Select Baudrate of Serial Port (Do not change)": "Sélectionnez le débit en bauds du port série (ne modifiez pas)",
+    "Default: 19200": "Par défaut : 19 200"
 }

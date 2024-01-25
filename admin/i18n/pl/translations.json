@@ -1,5 +1,9 @@
 {
-    "Enter serial port ID": "Wprowadź identyfikator portu szeregowego",
-    "Connection Identifier": "Identyfikator połączenia",
-    "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8": "Identyfikator portu szeregowego dla dostępu SUP2. Format: /dev/ttyUSBserial lub COM8"
+    "Basic configuration for SUP2 access": "Podstawowa konfiguracja dostępu SUP2",
+    "Serial Port Id": "Identyfikator portu szeregowego",
+    "Select the Serial Port Id. For manual input stop the adapter": "Wybierz identyfikator portu szeregowego. Aby wprowadzić dane ręcznie, zatrzymaj adapter",
+    "Format: /dev/ttyUSBserial or COMx": "Format: /dev/ttyUSBserial lub COMx",
+    "Baudrate": "Szybkość transmisji",
+    "Select Baudrate of Serial Port (Do not change)": "Wybierz szybkość transmisji portu szeregowego (nie zmieniaj)",
+    "Default: 19200": "Wartość domyślna: 19200"
 }

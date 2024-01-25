@@ -1,5 +1,9 @@
 {
-    "Enter serial port ID": "Voer de seriële poort-ID in",
-    "Connection Identifier": "Verbindings-ID",
-    "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8": "Seriële poort-id voor SUP2-toegang. Formaat: /dev/ttyUSBserial of COM8"
+    "Basic configuration for SUP2 access": "Basisconfiguratie voor SUP2-toegang",
+    "Serial Port Id": "Seriële poort-ID",
+    "Select the Serial Port Id. For manual input stop the adapter": "Selecteer de seriële poort-ID. Voor handmatige invoer stopt u de adapter",
+    "Format: /dev/ttyUSBserial or COMx": "Formaat: /dev/ttyUSBserial of COMx",
+    "Baudrate": "Baudraat",
+    "Select Baudrate of Serial Port (Do not change)": "Selecteer baudrate van seriële poort (niet wijzigen)",
+    "Default: 19200": "Standaard: 19200"
 }

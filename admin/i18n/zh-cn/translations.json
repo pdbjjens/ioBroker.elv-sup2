@@ -1,5 +1,9 @@
 {
-    "Enter serial port ID": "输入串口ID",
-    "Connection Identifier": "连接标识符",
-    "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8": "SUP2 访问的串行端口 ID。格式：/dev/ttyUSBserial 或 COM8"
+    "Basic configuration for SUP2 access": "SUP2访问的基本配置",
+    "Serial Port Id": "串口号",
+    "Select the Serial Port Id. For manual input stop the adapter": "选择串行端口 ID。对于手动输入停止适配器",
+    "Format: /dev/ttyUSBserial or COMx": "格式：/dev/ttyUSBserial 或 COMx",
+    "Baudrate": "波特率",
+    "Select Baudrate of Serial Port (Do not change)": "选择串口波特率（不要更改）",
+    "Default: 19200": "默认值：19200"
 }

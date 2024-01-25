@@ -1,5 +1,9 @@
 {
-    "Enter serial port ID": "Enter serial port ID",
-    "Connection Identifier": "Connection Identifier",
-    "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8": "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8"
+    "Basic configuration for SUP2 access": "Basic configuration for SUP2 access",
+    "Serial Port Id": "Serial Port Id",
+    "Select the Serial Port Id. For manual input stop the adapter": "Select the Serial Port Id. For manual input stop the adapter",
+    "Format: /dev/ttyUSBserial or COMx": "Format: /dev/ttyUSBserial or COMx",
+    "Baudrate": "Baudrate",
+    "Select Baudrate of Serial Port (Do not change)": "Select Baudrate of Serial Port (Do not change)",
+    "Default: 19200": "Default: 19200"
 }

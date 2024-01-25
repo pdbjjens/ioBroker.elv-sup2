@@ -1,5 +1,9 @@
 {
-    "Enter serial port ID": "Введите идентификатор последовательного порта",
-    "Connection Identifier": "Идентификатор соединения",
-    "Serial Port Id for SUP2 access. Format: /dev/ttyUSBserial or COM8": "Идентификатор последовательного порта для доступа к SUP2. Формат: /dev/ttyUSBserial или COM8."
+    "Basic configuration for SUP2 access": "Базовая конфигурация для доступа SUP2",
+    "Serial Port Id": "Идентификатор последовательного порта",
+    "Select the Serial Port Id. For manual input stop the adapter": "Выберите идентификатор последовательного порта. Для ручного ввода остановите адаптер",
+    "Format: /dev/ttyUSBserial or COMx": "Формат: /dev/ttyUSBserial или COMx.",
+    "Baudrate": "Скорость передачи данных",
+    "Select Baudrate of Serial Port (Do not change)": "Выберите скорость последовательного порта (не меняйте)",
+    "Default: 19200": "По умолчанию: 19200"
 }
