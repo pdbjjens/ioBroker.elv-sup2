@@ -1,6 +1,6 @@
-![Logo](admin/elv-sup2.png)
-
 # ioBroker.elv-sup2
+
+![Logo](admin/elv-sup2.png)
 
 [![NPM version](https://img.shields.io/npm/v/iobroker.elv-sup2.svg)](https://www.npmjs.com/package/iobroker.elv-sup2)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.elv-sup2.svg)](https://www.npmjs.com/package/iobroker.elv-sup2)
@@ -24,6 +24,12 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS** - 2024H2 maintenance release
+
+* (pdbjjens) Change: node>=18, js-contoller>=5 and admin>=6 required
+* (pdbjjens) Change: Removed .npmignore
+* (pdbjjens) New: Updated dependencies
+
 ### 0.0.7 (2024-01-25)
 
 * (pdbjjens) New: json config UI

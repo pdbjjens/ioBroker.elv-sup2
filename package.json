@@ -9,7 +9,9 @@
   "homepage": "https://github.com/pdbjjens/ioBroker.elv-sup2",
   "license": "MIT",
   "keywords": [
-    "ELV SUP2"
+    "ioBroker",
+    "ELV",
+    "SUP2"
   ],
   "repository": {
     "type": "git",
