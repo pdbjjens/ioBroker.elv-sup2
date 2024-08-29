@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "elv-sup2",
-    "version": "0.0.7",
+    "version": "0.1.0",
     "news": {
+      "0.1.0": {
+        "en": "Change: node>=18, js-contoller>=5 and admin>=6 required\nChange: Removed .npmignore\nNew: Updated dependencies",
+        "de": "Änderung: node>=18, js-contoller>=5 und admin>=6 erforderlich\nÄnderung: .npmignore entfernt\nNeu: Aktualisierte Abhängigkeiten",
+        "ru": "Изменение: node>=18, js-contoller>=5 и admin>=6 требуется\nИзменение: Удалено .npmignore\nНовые: Обновленные зависимости",
+        "pt": "Alteração: node>=18, js-contoller>=5 e admin>=6 requerido\nMudança: Removido .npmignore\nNovo: Dependências atualizadas",
+        "nl": "Verandering: node>=18, js-contoller>=5 en admin>=6 vereist\nWijzigen: verwijderd .npmignore\nNieuw: Bijgewerkte afhankelijkheden",
+        "fr": "Changement: noeud>=18, js-contoller>=5 et admin>=6 requis\nChangement : supprimé .npmignore\nNouveau: Dépendances actualisées",
+        "it": "Modifica: nodo>=18, js-contoller>=5 e admin>=6 richiesto\nModifica: Removed .npmignore\nNuovo: dipendenze aggiornate",
+        "es": "Cambio: node confianza=18, js-contoller=5 y administración=6 requerido\nCambio: Quitado .npmignore\nNuevas: dependencias actualizadas",
+        "pl": "Zmiana: węzeł > = 18, js- contoller > = 5 i admin > = 6 wymagane\nZmiana: Usunięto .npmignore\nNowy: Aktualizacja zależności",
+        "uk": "Зміна: вершина>=18, js-contoller>=5 і admin>=6\nЗміна: Видалити .npmignore\nНовий: Оновлені залежності",
+        "zh-cn": "更改:节点18、js-contoller%5和管理员6\n更改: 删除 .npmignore\n新建:更新的依赖关系"
+      },
       "0.0.7": {
         "en": "New: json config UI\nNew: List of available serial ports in config UI",
         "de": "Neu: json config UI\nNeu: Liste der verfügbaren seriellen Ports in config UI",
@@ -80,19 +93,6 @@
         "pl": "Pierwsze wydanie",
         "uk": "Перший реліз",
         "zh-cn": "第一次释放"
-      },
-      "0.0.3-alpha.0": {
-        "en": "pre-release",
-        "de": "vor-release",
-        "ru": "pre-релиз",
-        "pt": "pré-lançamento",
-        "nl": "vertaling:",
-        "fr": "pre-release",
-        "it": "pre-release",
-        "es": "pre-release",
-        "pl": "prerelease",
-        "uk": "до релізу",
-        "zh-cn": "采购前"
       }
     },
     "titleLang": {

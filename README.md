@@ -24,7 +24,7 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS** - 2024H2 maintenance release
+### 0.1.0 (2024-08-29) - 2024H2 maintenance release
 
 * (pdbjjens) Change: node>=18, js-contoller>=5 and admin>=6 required
 * (pdbjjens) Change: Removed .npmignore
@@ -47,10 +47,6 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 ### 0.0.4 (2023-02-18)
 
 * (pdbjjens) Second release
-
-### 0.0.4-alpha.0 (2023-02-17)
-
-* (pdbjjens) Second pre-release
 
 ## Legal Notices
 
