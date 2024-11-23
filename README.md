@@ -24,9 +24,15 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS** - 2025H1 maintenance release
+
+* (pdbjjens) New: Tested with node.js 22
+* (pdbjjens) Fix: Responsive Design tweaks
+* (pdbjjens) New: Updated dependencies
+
 ### 0.1.0 (2024-08-29) - 2024H2 maintenance release
 
-* (pdbjjens) Change: node>=18, js-contoller>=5 and admin>=6 required
+* (pdbjjens) Change: node>=18, js-controller>=5 and admin>=6 required
 * (pdbjjens) Change: Removed .npmignore
 * (pdbjjens) New: Updated dependencies
 

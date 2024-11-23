@@ -7,9 +7,11 @@
                     "type" : "header",
                     "text" : "Basic configuration for SUP2 access",
                     "size": 2,
+                    "xs": 12,
                     "sm": 12,
                     "md": 12,
-                    "lg": 12
+                    "lg": 12,
+                    "xl": 12
                   },            
                 "connectionIdentifier": {
                     "newLine": true,
@@ -19,9 +21,11 @@
                     "label": "Serial Port Id",
                     "help": "Select the Serial Port Id. For manual input stop the adapter",
                     "tooltip": "Format: /dev/ttyUSBserial or COMx",
+                    "xs": 12,
                     "sm": 12,
                     "md": 6,
-                    "lg": 6
+                    "lg": 6,
+                    "xl": 6
                 },
                 "baudrate": {
                     "type": "select",
@@ -40,9 +44,11 @@
                       {"value": 57600, "label": "57600"},
                       {"value": 115200, "label": "115200"}
                     ],
+                    "xs": 12,
                     "sm": 12,
                     "md": 6,
-                    "lg": 6
+                    "lg": 6,
+                    "xl": 6
                 }
             }
 }
