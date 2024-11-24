@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "elv-sup2",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "news": {
+      "0.1.1": {
+        "en": "New: Tested with node.js 22\nFix: Responsive Design tweaks\nNew: Updated dependencies",
+        "de": "Neu: Getestet mit node.js 22\nFix: Responsive Design Tweaks\nNeu: Aktualisierte Abhängigkeiten",
+        "ru": "Новый: Тестируется с node.js 22\nFix: Реакция дизайна\nНовые: Обновленные зависимости",
+        "pt": "Novo: Testado com node.js 22\nFix: Design responsivo ajustes\nNovo: Dependências atualizadas",
+        "nl": "Nieuw: Getest met node.js 22\nFix: Responsive Design tweaks\nNieuw: Bijgewerkte afhankelijkheden",
+        "fr": "Nouveau: Testé avec node.js 22\nCorrection : Retouches de conception réactives\nNouveau: Dépendances actualisées",
+        "it": "Nuovo: Testato con node.js 22\nFix: Responsive Design tweaks\nNuovo: dipendenze aggiornate",
+        "es": "Nuevo: probado con node.js 22\nFijación: Ajustes de diseño responsable\nNuevas: dependencias actualizadas",
+        "pl": "Nowy: Testowany z node.js 22\nFix: Responsive Design nowsze\nNowy: Aktualizacja zależności",
+        "uk": "Новий: Випробувано з node.js 22\nФіксація: Відповідні дизайнерські мішки\nНовий: Оновлені залежності",
+        "zh-cn": "New:通过节点测试.js 22\n修补:应变设计\n新建:更新的依赖关系"
+      },
       "0.1.0": {
         "en": "Change: node>=18, js-contoller>=5 and admin>=6 required\nChange: Removed .npmignore\nNew: Updated dependencies",
         "de": "Änderung: node>=18, js-contoller>=5 und admin>=6 erforderlich\nÄnderung: .npmignore entfernt\nNeu: Aktualisierte Abhängigkeiten",
@@ -80,19 +93,6 @@
         "pl": "Second prerelease",
         "uk": "Другий до релізу",
         "zh-cn": "第二期采购"
-      },
-      "0.0.3": {
-        "en": "First release",
-        "de": "Erste Veröffentlichung",
-        "ru": "Первый выпуск",
-        "pt": "Primeiro lançamento",
-        "nl": "Vertaling:",
-        "fr": "Premier communiqué",
-        "it": "Prima release",
-        "es": "Primera liberación",
-        "pl": "Pierwsze wydanie",
-        "uk": "Перший реліз",
-        "zh-cn": "第一次释放"
       }
     },
     "titleLang": {

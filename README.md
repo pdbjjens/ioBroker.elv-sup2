@@ -24,7 +24,7 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS** - 2025H1 maintenance release
+### 0.1.1 (2024-11-24) - 2025H1 maintenance release
 
 * (pdbjjens) New: Tested with node.js 22
 * (pdbjjens) Fix: Responsive Design tweaks
@@ -49,10 +49,6 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 
 * (pdbjjens) List available serial ports
 * (pdbjjens) Adapter not enabled on startup
-
-### 0.0.4 (2023-02-18)
-
-* (pdbjjens) Second release
 
 ## Legal Notices
 
