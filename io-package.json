@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "elv-sup2",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "news": {
+      "0.2.0": {
+        "en": "Change: node>=20, js-controller>=7.0.7 and admin>=7.6.17 required\nChange: Updated to ESLint 9 and serialport 13\nChange: Cleanup devDependencies",
+        "de": "Änderung: node>=20, js-controller>=7.0.7 und admin>=7.6.17 erforderlich\nÄnderung: Aktualisiert auf ESLint 9 und Serialport 13\nÄnderung: Cleanup devDependencies",
+        "ru": "Изменение: node>=20, js-контроллер>=7.0.7 и admin>=7.6.17 требуется\nИзменения: обновлены до ESLint 9 и Seriesport 13\nОбновление: Cleanup devDependencies",
+        "pt": "Alteração: nó>=20, js-controlador>=7.07 e admin>=7.6.17 necessários\nMudança: Atualizado para ESLint 9 e serialport 13\nAlteração: Limpeza devDependências",
+        "nl": "Verandering: node>=20, js-controller>=7.7 en admin>=7.617 vereist\nWijziging: bijgewerkt naar ESLint 9 en seriële poort 13\nVerandering: Opruimen van devDependencies",
+        "fr": "Changement : noeud>=20, js-controller>=7.0.7 et admin>=7.6.17 requis\nModification: Mise à jour à ESLint 9 et port série 13\nChangement: Dépendances de nettoyage",
+        "it": "Modifica: nodo>=20, js-controller>=7.0.7 e admin>=7.6.17 richiesto\nModifica: Aggiornato a ESLint 9 e serialport 13\nCambiamento: Cleanup devDependencies",
+        "es": "Cambio: node confianza=20, js-controller confianza=7.0.7 y administración=7.6.17 requerido\nCambio: Actualizado a ESLint 9 y serialport 13\nCambio: DevDependencies de limpieza",
+        "pl": "Zmiana: węzeł > = 20, kontroler js- > = 7.0.7 i admin > = 7.6.17 wymagane\nZmiana: Aktualizacja do ESLint 9 i portu szeregowego 13\nZmiana: Oczyszczenie devDevendences",
+        "uk": "Зміна: вершина>=20, js-controller>=7.0.7 і admin>=7.6.17 потрібно\nЗміна: Оновлено до ESLint 9 та серійного порту 13\nЗміна: Прибиральники",
+        "zh-cn": "变化:节点20、js控制器7.0.7和管理员7.6.17\n更改:更新为ESLint 9和系列端口13\n变化: 清理依赖性"
+      },
       "0.1.1": {
         "en": "New: Tested with node.js 22\nFix: Responsive Design tweaks\nNew: Updated dependencies",
         "de": "Neu: Getestet mit node.js 22\nFix: Responsive Design Tweaks\nNeu: Aktualisierte Abhängigkeiten",
@@ -80,19 +93,6 @@
         "pl": "Drugie wydanie",
         "uk": "Другий реліз",
         "zh-cn": "第二次释放"
-      },
-      "0.0.4-alpha.0": {
-        "en": "Second pre-release",
-        "de": "Zweite Vor-Release",
-        "ru": "Второй предрелиз",
-        "pt": "Segundo pré-lançamento",
-        "nl": "Tweede voorwaardelijke vrijlating",
-        "fr": "Second pre-release",
-        "it": "Secondo pre-release",
-        "es": "Segunda liberación previa",
-        "pl": "Second prerelease",
-        "uk": "Другий до релізу",
-        "zh-cn": "第二期采购"
       }
     },
     "titleLang": {

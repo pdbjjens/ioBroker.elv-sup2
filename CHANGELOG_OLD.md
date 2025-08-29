@@ -1,4 +1,9 @@
 # Older changes
+## 0.0.5 (2023-02-20)
+
+* (pdbjjens) List available serial ports
+* (pdbjjens) Adapter not enabled on startup
+
 ## 0.0.4 (2023-02-18)
 
 * (pdbjjens) Second release

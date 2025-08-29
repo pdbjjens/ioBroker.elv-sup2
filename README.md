@@ -24,7 +24,7 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS** - 2025H2 maintenance release
+### 0.2.0 (2025-08-29) - 2025H2 maintenance release
 
 * (pdbjjens) Change: node>=20, js-controller>=7.0.7 and admin>=7.6.17 required
 * (pdbjjens) Change: Updated to ESLint 9 and serialport 13
@@ -50,11 +50,6 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 ### 0.0.6 (2023-02-20)
 
 * (pdbjjens) Third release
-
-### 0.0.5 (2023-02-20)
-
-* (pdbjjens) List available serial ports
-* (pdbjjens) Adapter not enabled on startup
 
 ## Legal Notices
 
