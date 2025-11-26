@@ -68,19 +68,6 @@
         "uk": "Третій реліз",
         "zh-cn": "第三次释放"
       },
-      "0.0.5": {
-        "en": "List available serial ports\nAdapter not enabled on startup",
-        "de": "Verfügbare serielle Ports\nAdapter nicht aktiviert beim Start",
-        "ru": "Список доступные серийные порты\nАдаптер не включен при запуске",
-        "pt": "Lista de portas seriais disponíveis\nAdapter não ativado na inicialização",
-        "nl": "List beschikbare serie havens\nAdapter niet in staat om te beginnen",
-        "fr": "Liste des ports série disponibles\nAdaptateur non activé au démarrage",
-        "it": "Elenco delle porte seriali disponibili\nAdattatore non abilitato all'avvio",
-        "es": "Lista de puertos serie disponibles\nAdaptador no habilitado para la puesta en marcha",
-        "pl": "Lista portów seryjnych\nAdapter nie pozwalał na startup",
-        "uk": "Перелік доступних серійних портів\nАдаптер не ввімкнений на старті",
-        "zh-cn": "现有港口名单\n启动后无法取得成功"
-      },
       "0.0.4": {
         "en": "Second release",
         "de": "Zweite Veröffentlichung",
