@@ -24,7 +24,7 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.2.1 (2025-11-27)
 
 * (pdbjjens) Change: Migrate To Trusted Publishing
 
@@ -50,10 +50,6 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 
 * (pdbjjens) New: json config UI
 * (pdbjjens) New: List of available serial ports in config UI
-
-### 0.0.6 (2023-02-20)
-
-* (pdbjjens) Third release
 
 ## Legal Notices
 

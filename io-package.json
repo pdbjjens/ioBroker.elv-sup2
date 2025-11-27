@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "elv-sup2",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "news": {
+      "0.2.1": {
+        "en": "Change: Migrate To Trusted Publishing",
+        "de": "Änderung: Migrate to Trusted Publishing",
+        "ru": "Перемены: переезд в доверенное издательство",
+        "pt": "Mudança: Migrar para publicação confiável",
+        "nl": "Wijzigen: migreren naar vertrouwde uitgeverij",
+        "fr": "Changement : Migrer vers une publication fiable",
+        "it": "Cambiamento: Migrare all'editoria fidata",
+        "es": "Cambio: Migrar a la publicación confiada",
+        "pl": "Zmiana: Migracja do zaufanej publikacji",
+        "uk": "Зміна: Міграція довірених видавців",
+        "zh-cn": "更改: 迁移到信任的出版"
+      },
       "0.2.0": {
         "en": "Change: node>=20, js-controller>=7.0.7 and admin>=7.6.17 required\nChange: Updated to ESLint 9 and serialport 13\nChange: Cleanup devDependencies",
         "de": "Änderung: node>=20, js-controller>=7.0.7 und admin>=7.6.17 erforderlich\nÄnderung: Aktualisiert auf ESLint 9 und Serialport 13\nÄnderung: Cleanup devDependencies",

@@ -1,4 +1,8 @@
 # Older changes
+## 0.0.6 (2023-02-20)
+
+* (pdbjjens) Third release
+
 ## 0.0.5 (2023-02-20)
 
 * (pdbjjens) List available serial ports
