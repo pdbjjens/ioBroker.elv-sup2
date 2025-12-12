@@ -221,12 +221,12 @@ class ElvSup2 extends utils.Adapter {
                 this.setState('info.connection', false, true);
 
                 if (err && err.disconnect === true) {
-                    connectTimeout = setInterval(() => {
+                    connectTimeout = this.setInterval(() => {
                         this.sup = null;
                         this.log.error(`${err} - Trying to reconnect Sup... `);
                         this.connect()
                             .then(() => {
-                                clearInterval(connectTimeout);
+                                this.clearInterval(connectTimeout);
                                 connectTimeout = null;
                             })
                             .catch(error => {
@@ -285,16 +285,16 @@ class ElvSup2 extends utils.Adapter {
      * @param {() => void} callback
      */
     async onUnload(callback) {
-        connectTimeout && clearInterval(connectTimeout);
+        connectTimeout && this.clearInterval(connectTimeout);
         connectTimeout = null;
 
-        checkConnectionTimer && clearTimeout(checkConnectionTimer);
+        checkConnectionTimer && this.clearTimeout(checkConnectionTimer);
         checkConnectionTimer = null;
 
-        //refreshTimeout && clearTimeout(refreshTimeout);
+        //refreshTimeout && this.clearTimeout(refreshTimeout);
         //refreshTimeout = null;
 
-        timeoutId && clearTimeout(timeoutId);
+        timeoutId && this.clearTimeout(timeoutId);
         timeoutId = null;
 
         if (sup && sup.isOpen) {
@@ -378,12 +378,10 @@ class ElvSup2 extends utils.Adapter {
                             supCommand = `*` + `LIM:${state.val === true ? 'ON' : 'OFF'}\n`;
                             break;
                         case 'INPM':
-                            supCommand =
-                                `*` + `INPM:${state.val.toString().substring(0, 1) === 'A' ? 'ANALOG' : 'DIGITAL'}\n`;
+                            supCommand = `*` + `INPM:${state.val === 0 ? 'ANALOG' : 'DIGITAL'}\n`;
                             break;
                         case 'MODE':
-                            supCommand =
-                                `*` + `MODE:${state.val.toString().substring(0, 1) === 'S' ? 'STEREO' : 'MONO'}\n`;
+                            supCommand = `*` + `MODE:${state.val === 0 ? 'MONO' : 'STEREO'}\n`;
                             break;
                         case 'FREQ':
                             supCommand = `*` + `FREQ:${state.val * 100}\n`;
@@ -449,10 +447,10 @@ class ElvSup2 extends utils.Adapter {
 
     waitForData() {
         return new Promise((resolve, reject) => {
-            timeoutId = setTimeout(() => reject(new Error('Command Response Timeout. Wrong serial port?')), 2000);
+            timeoutId = this.setTimeout(() => reject(new Error('Command Response Timeout. Wrong serial port?')), 2000);
 
             sup.on('data', data => {
-                clearTimeout(timeoutId);
+                this.clearTimeout(timeoutId);
                 //this.log.debug('Response to Send command: ' + data);
                 resolve(data);
             });
@@ -584,7 +582,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'Preset Frequency 1',
                         type: 'number',
-                        role: 'value',
+                        role: 'value.frequency',
                         unit: 'MHz',
                         min: 87.5,
                         max: 108.0,
@@ -596,7 +594,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'Preset Frequency 2',
                         type: 'number',
-                        role: 'value',
+                        role: 'value.frequency',
                         unit: 'MHz',
                         min: 87.5,
                         max: 108.0,
@@ -608,7 +606,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'Preset Frequency 3',
                         type: 'number',
-                        role: 'value',
+                        role: 'value.frequency',
                         unit: 'MHz',
                         min: 87.5,
                         max: 108.0,
@@ -620,7 +618,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'Output Power',
                         type: 'number',
-                        role: 'power.level',
+                        role: 'level.power',
                         unit: 'dB',
                         min: 88,
                         max: 118,
@@ -632,7 +630,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'Input Level',
                         type: 'number',
-                        role: 'level.input',
+                        role: 'level.volume',
                         unit: '%',
                         min: 0,
                         max: 100,
@@ -644,7 +642,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'Preemphasis',
                         type: 'number',
-                        role: 'value',
+                        role: 'level',
                         unit: 'uS',
                         min: 0,
                         max: 75,
@@ -656,7 +654,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'Audio Deviation',
                         type: 'number',
-                        role: 'value',
+                        role: 'level.frequency',
                         unit: 'kHz',
                         min: 0.0,
                         max: 90.0,
@@ -666,9 +664,9 @@ class ElvSup2 extends utils.Adapter {
                     break;
                 case 'LIM':
                     common = {
-                        name: 'Limiter',
+                        name: 'Limiter On/Off',
                         type: 'boolean',
-                        role: 'indicator',
+                        role: 'switch.mode.limiter',
                         read: true,
                         write: true,
                     };
@@ -677,7 +675,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'RDS On/Off',
                         type: 'boolean',
-                        role: 'indicator',
+                        role: 'switch.mode.rds',
                         read: true,
                         write: true,
                     };
@@ -685,10 +683,11 @@ class ElvSup2 extends utils.Adapter {
                 case 'INPM':
                     common = {
                         name: 'Input Mode',
-                        type: 'string',
-                        role: 'indicator',
+                        type: 'number',
+                        role: 'level.mode.input',
                         read: true,
                         write: true,
+                        states: { 0: 'Analog', 1: 'Digital' },
                     };
                     break;
                 case 'RDSP':
@@ -713,7 +712,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'RDS Program Type',
                         type: 'number',
-                        role: 'value',
+                        role: 'level',
                         unit: '',
                         min: 0,
                         max: 31,
@@ -725,7 +724,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'Frequency',
                         type: 'number',
-                        role: 'value',
+                        role: 'level.frequency',
                         unit: 'MHz',
                         min: 87.5,
                         max: 108.0,
@@ -736,17 +735,18 @@ class ElvSup2 extends utils.Adapter {
                 case 'MODE':
                     common = {
                         name: 'Mode',
-                        type: 'string',
-                        role: 'indicator',
+                        type: 'number',
+                        role: 'level.mode',
                         read: true,
                         write: true,
+                        states: { 0: 'Mono', 1: 'Stereo' },
                     };
                     break;
                 case 'TA':
                     common = {
                         name: 'TA On/Off',
                         type: 'boolean',
-                        role: 'indicator',
+                        role: 'switch.mode.ta',
                         read: true,
                         write: true,
                     };
@@ -755,7 +755,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'TP On/Off',
                         type: 'boolean',
-                        role: 'indicator',
+                        role: 'switch.mode.tp',
                         read: true,
                         write: true,
                     };
@@ -764,7 +764,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'Mute On/Off',
                         type: 'boolean',
-                        role: 'indicator',
+                        role: 'switch.mode.mute',
                         read: true,
                         write: true,
                     };
@@ -773,7 +773,7 @@ class ElvSup2 extends utils.Adapter {
                     common = {
                         name: 'RF On/Off',
                         type: 'boolean',
-                        role: 'indicator',
+                        role: 'switch.mode.rf',
                         read: true,
                         write: true,
                     };
@@ -806,7 +806,7 @@ class ElvSup2 extends utils.Adapter {
             if (!obj) {
                 //object does not exist - create it!
                 try {
-                    await this.setForeignObjectAsync(newState._id, newState);
+                    await this.setForeignObject(newState._id, newState);
                     this.log.debug(`Object ${newState._id} created`);
                 } catch (err) {
                     return err;
@@ -858,10 +858,10 @@ class ElvSup2 extends utils.Adapter {
                     stateVal = supStates.RDS === 'ON' ? true : false;
                     break;
                 case 'INPM':
-                    stateVal = supStates.INPM === 'ANALOG' ? 'Analog' : 'Digital';
+                    stateVal = supStates.INPM === 'ANALOG' ? 0 : 1;
                     break;
                 case 'MODE':
-                    stateVal = supStates.MODE === 'STEREO' ? 'Stereo' : 'Mono';
+                    stateVal = supStates.MODE === 'MONO' ? 0 : 1;
                     break;
                 case 'RDSP':
                     stateVal = supStates.RDSP;

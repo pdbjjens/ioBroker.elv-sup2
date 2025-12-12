@@ -1,20 +1,20 @@
-# ioBroker.elv-sup2
-
 ![Logo](admin/elv-sup2.png)
 
+# ioBroker.elv-sup2
+
 [![NPM version](https://img.shields.io/npm/v/iobroker.elv-sup2.svg)](https://www.npmjs.com/package/iobroker.elv-sup2)
+![Current version in stable repository](https://iobroker.live/badges/elv-sup2-stable.svg)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.elv-sup2.svg)](https://www.npmjs.com/package/iobroker.elv-sup2)
 ![Number of Installations](https://iobroker.live/badges/elv-sup2-installed.svg)
-![Current version in stable repository](https://iobroker.live/badges/elv-sup2-stable.svg)
 ![Test and Release](https://github.com/pdbjjens/ioBroker.elv-sup2/workflows/Test%20and%20Release/badge.svg)
 
-[![NPM](https://nodei.co/npm/iobroker.elv-sup2.png?downloads=true)](https://nodei.co/npm/iobroker.elv-sup2/)
+[![NPM](https://nodei.co/npm/iobroker.elv-sup2.png?data=d,s)](https://www.npmjs.com/package/iobroker.elv-sup2)
 
 ## elv-sup2 adapter for ioBroker
 
 This adapter connects the ELV HQ-Stereo-FM-Testgenerator SUP2 to ioBroker via USB serial port. It allows to retrieve and set certain configuration parameters of the testgenerator among them the RDS text, RDS program name and type. SUP2 updating is not supported. Use the Windows program which is provided by ELV for this purpose.
 
-## Configuration hints
+## Configuration
 
 The only configuration parameter is the serial port Id of the port to which the SUP2 is connected.
 The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBroker installations.
@@ -24,6 +24,10 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+* (pdbjjens) **Fixed:** state roles corrected
+
 ### 0.2.1 (2025-11-27)
 
 * (pdbjjens) Change: Migrate To Trusted Publishing
