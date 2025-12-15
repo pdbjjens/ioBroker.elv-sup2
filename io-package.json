@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "elv-sup2",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "news": {
+      "0.2.2": {
+        "en": "**Fixed:** state roles corrected",
+        "de": "**Fixed:** Statusrollen korrigiert",
+        "ru": "** Исправлено:** Исправлены государственные должности",
+        "pt": "**Resolvido:** funções de estado corrigidas",
+        "nl": "**Fixed:** toestandsrollen gecorrigeerd",
+        "fr": "**Fixé:** état des rôles corrigé",
+        "it": "**Fixed:** ruoli di stato corretti",
+        "es": "**Fixed:** funciones estatales corregidas",
+        "pl": "* *Naprawiono:* * Skorygowane role stanu ",
+        "uk": "**Фіксований:** державні ролі виправлені",
+        "zh-cn": "** 已确定:** 纠正了国家角色"
+      },
       "0.2.1": {
         "en": "Change: Migrate To Trusted Publishing",
         "de": "Änderung: Migration auf Trusted Publishing",
@@ -80,19 +93,6 @@
         "pl": "Trzecie wydanie",
         "uk": "Третій реліз",
         "zh-cn": "第三次释放"
-      },
-      "0.0.4": {
-        "en": "Second release",
-        "de": "Zweite Veröffentlichung",
-        "ru": "Второй релиз",
-        "pt": "Segunda versão",
-        "nl": "Vertaling:",
-        "fr": "Deuxième sortie",
-        "it": "Seconda release",
-        "es": "Segunda liberación",
-        "pl": "Drugie wydanie",
-        "uk": "Другий реліз",
-        "zh-cn": "第二次释放"
       }
     },
     "titleLang": {

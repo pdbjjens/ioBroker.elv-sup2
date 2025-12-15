@@ -24,7 +24,7 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 0.2.2 (2025-12-15)
 
 * (pdbjjens) **Fixed:** state roles corrected
 
@@ -49,11 +49,6 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 * (pdbjjens) Change: node>=18, js-controller>=5 and admin>=6 required
 * (pdbjjens) Change: Removed .npmignore
 * (pdbjjens) New: Updated dependencies
-
-### 0.0.7 (2024-01-25)
-
-* (pdbjjens) New: json config UI
-* (pdbjjens) New: List of available serial ports in config UI
 
 ## Legal Notices
 

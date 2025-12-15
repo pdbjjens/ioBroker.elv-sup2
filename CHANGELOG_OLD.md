@@ -1,4 +1,9 @@
 # Older changes
+## 0.0.7 (2024-01-25)
+
+* (pdbjjens) New: json config UI
+* (pdbjjens) New: List of available serial ports in config UI
+
 ## 0.0.6 (2023-02-20)
 
 * (pdbjjens) Third release
