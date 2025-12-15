@@ -36,7 +36,7 @@ const myPriority = -1; // priority -1 is higher priority than 0
 //let workingOnPromise = false;
 //let item = [];
 
-//SUP parameters which are not included in response message
+//SUP parameters which are not included in response message and default values
 const supControl = {
     FREQ: 8850,
     RDST: 'First text',
@@ -334,7 +334,7 @@ class ElvSup2 extends utils.Adapter {
         try {
             await this.processStateChange(id, state);
         } catch (err) {
-            this.log.error(`Cannot process state change: ${err.message}`);
+            this.log.error(`Cannot process state change: ${err}`);
         }
     }
 
@@ -343,9 +343,13 @@ class ElvSup2 extends utils.Adapter {
             const me = Symbol();
             scq.wait(me, myPriority)
                 .then(() => {
-                    this.sendCommand(cmd).then(ack => {
-                        resolve(ack);
-                    });
+                    this.sendCommand(cmd)
+                        .then(ack => {
+                            resolve(ack);
+                        })
+                        .catch(e => {
+                            reject(e);
+                        });
                 })
                 .catch(e => {
                     reject(e);
@@ -372,53 +376,53 @@ class ElvSup2 extends utils.Adapter {
                 if (oCmnd[2] === channelId) {
                     switch (oCmnd[3]) {
                         case 'INPL':
-                            supCommand = `*` + `INPL:${state.val}\n`;
+                            supCommand = `*INPL:${state.val}\n`;
                             break;
                         case 'LIM':
-                            supCommand = `*` + `LIM:${state.val === true ? 'ON' : 'OFF'}\n`;
+                            supCommand = `*LIM:${state.val === true ? 'ON' : 'OFF'}\n`;
                             break;
                         case 'INPM':
-                            supCommand = `*` + `INPM:${state.val === 0 ? 'ANALOG' : 'DIGITAL'}\n`;
+                            supCommand = `*INPM:${state.val === 0 ? 'ANALOG' : 'DIGITAL'}\n`;
                             break;
                         case 'MODE':
-                            supCommand = `*` + `MODE:${state.val === 0 ? 'MONO' : 'STEREO'}\n`;
+                            supCommand = `*MODE:${state.val === 0 ? 'MONO' : 'STEREO'}\n`;
                             break;
                         case 'FREQ':
-                            supCommand = `*` + `FREQ:${state.val * 100}\n`;
+                            supCommand = `*FREQ:${state.val * 100}\n`;
                             break;
                         case 'ADEV':
-                            supCommand = `*` + `ADEV:${state.val * 100}\n`;
+                            supCommand = `*ADEV:${state.val * 100}\n`;
                             break;
                         case 'POW':
-                            supCommand = `*` + `POW:${state.val}\n`;
+                            supCommand = `*POW:${state.val}\n`;
                             break;
                         case 'PREE':
-                            state.val = state.val <= 49 ? 0 : state.val <= 74 ? 50 : state.val === 75 ? 75 : 50;
-                            supCommand = `*` + `PREE:${state.val}\n`;
+                            state.val = state.val <= 49 ? 0 : state.val <= 74 ? 50 : 75;
+                            supCommand = `*PREE:${state.val}\n`;
                             break;
                         case 'RDS':
-                            supCommand = `*` + `RDS:${state.val === true ? 'ON' : 'OFF'}\n`;
+                            supCommand = `*RDS:${state.val === true ? 'ON' : 'OFF'}\n`;
                             break;
                         case 'RDSY':
-                            supCommand = `*` + `RDSY:${state.val}\n`;
+                            supCommand = `*RDSY:${state.val}\n`;
                             break;
                         case 'RDSP':
-                            supCommand = `*` + `RDSP:${state.val}\n`;
+                            supCommand = `*RDSP:${state.val}\n`;
                             break;
                         case 'TA':
-                            supCommand = `*` + `TA:${state.val === true ? 'ON' : 'OFF'}\n`;
+                            supCommand = `*TA:${state.val === true ? 'ON' : 'OFF'}\n`;
                             break;
                         case 'TP':
-                            supCommand = `*` + `TP:${state.val === true ? 'ON' : 'OFF'}\n`;
+                            supCommand = `*TP:${state.val === true ? 'ON' : 'OFF'}\n`;
                             break;
                         case 'MUTE':
-                            supCommand = `*` + `MUTE:${state.val === true ? 'ON' : 'OFF'}\n`;
+                            supCommand = `*MUTE:${state.val === true ? 'ON' : 'OFF'}\n`;
                             break;
                         case 'RF':
-                            supCommand = `*` + `RF:${state.val === true ? 'ON' : 'OFF'}\n`;
+                            supCommand = `*RF:${state.val === true ? 'ON' : 'OFF'}\n`;
                             break;
                         case 'RDST':
-                            supCommand = `*` + `RDST:${state.val.toString().padEnd(32)}\n`;
+                            supCommand = `*RDST:${state.val.toString().padEnd(32)}\n`;
                             break;
 
                         default:
@@ -427,9 +431,9 @@ class ElvSup2 extends utils.Adapter {
                     }
                     this.queuedSendCommand(supCommand)
                         .then(ack => {
-                            this.log.debug(`Ack ${ack}`);
+                            Debug && this.log.debug(`Ack ${ack}`);
                             if (ack == '*A') {
-                                this.setStateAsync(sid, state.val, true);
+                                this.setState(sid, state.val, true);
                                 resolve(ack);
                             } else {
                                 reject(new Error('Unknown acknowledge from SUP2'));
@@ -442,18 +446,6 @@ class ElvSup2 extends utils.Adapter {
                     reject(new Error('Unknown SUP2 parameter'));
                 }
             }
-        });
-    }
-
-    waitForData() {
-        return new Promise((resolve, reject) => {
-            timeoutId = this.setTimeout(() => reject(new Error('Command Response Timeout. Wrong serial port?')), 2000);
-
-            sup.on('data', data => {
-                this.clearTimeout(timeoutId);
-                //this.log.debug('Response to Send command: ' + data);
-                resolve(data);
-            });
         });
     }
 
@@ -471,17 +463,15 @@ class ElvSup2 extends utils.Adapter {
 
             sup.write(cmd, err => {
                 if (!err) {
-                    this.waitForData()
-                        .then(result => {
-                            //this.log.debug('Response to Send command: ' + result);
-                            resolve(result);
-                        })
-                        .catch(error => {
-                            //this.log.error('Timeout waiting for response: ' + error);
-                            reject(error);
-                        });
+                    timeoutId = this.setTimeout(() => reject(new Error('Command Response Timeout.')), 2000);
+
+                    sup.once('data', data => {
+                        this.clearTimeout(timeoutId);
+                        Debug && this.log.debug(`Response to Send command: ${data}`);
+                        resolve(data);
+                    });
                 } else {
-                    //this.log.error('Cannot write to port: ' + err);
+                    this.log.error(`Cannot write to port: ${err}`);
                     reject(err);
                 }
             });
@@ -643,11 +633,12 @@ class ElvSup2 extends utils.Adapter {
                         name: 'Preemphasis',
                         type: 'number',
                         role: 'level',
-                        unit: 'uS',
+                        unit: 'us',
                         min: 0,
                         max: 75,
                         read: true,
                         write: true,
+                        states: { 0: 'AUS', 50: '50', 75: '75' },
                     };
                     break;
                 case 'ADEV':
@@ -718,6 +709,40 @@ class ElvSup2 extends utils.Adapter {
                         max: 31,
                         read: true,
                         write: true,
+                        states: {
+                            0: 'Keine Angabe',
+                            1: 'Nachrichten',
+                            2: 'Aktuelles',
+                            3: 'Information',
+                            4: 'Sport',
+                            5: 'Bildung',
+                            6: 'Hörspiel',
+                            7: 'Kultur',
+                            8: 'Wissenschaft',
+                            9: 'Verschiedenes',
+                            10: 'Pop Musik',
+                            11: 'Rock Musik',
+                            12: 'Unterhaltungsmusik',
+                            13: 'Leichte Klassik',
+                            14: 'Ernste Klassik',
+                            15: 'Andere Musik',
+                            16: 'Wetter',
+                            17: 'Finanzen',
+                            18: 'Kinderprogramm',
+                            19: 'Gesellschaftliches',
+                            20: 'Religion',
+                            21: 'Höhreranufe',
+                            22: 'Reisen',
+                            23: 'Freizeit',
+                            24: 'Jazz Musik',
+                            25: 'Country Musik',
+                            26: 'Nationale Musik',
+                            27: 'Oldies',
+                            28: 'Volksmusik',
+                            29: 'Dokumentationen',
+                            30: 'Alarmtest',
+                            31: 'Alarm',
+                        },
                     };
                     break;
                 case 'FREQ':
@@ -807,7 +832,7 @@ class ElvSup2 extends utils.Adapter {
                 //object does not exist - create it!
                 try {
                     await this.setForeignObject(newState._id, newState);
-                    this.log.debug(`Object ${newState._id} created`);
+                    Debug && this.log.debug(`Object ${newState._id} created`);
                 } catch (err) {
                     return err;
                 }
