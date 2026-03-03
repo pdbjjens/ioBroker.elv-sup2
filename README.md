@@ -24,6 +24,11 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+* (pdbjjens) **Changed**: node>=20, js-controller>=7.0.7 and admin>=7.7.22 required
+* (pdbjjens) **Fixed**: update release-script (#434)
+
 ### 0.2.2 (2025-12-15)
 
 * (pdbjjens) **Fixed:** state roles corrected
