@@ -1,4 +1,10 @@
 # Older changes
+## 0.1.0 (2024-08-29) - 2024H2 maintenance release
+
+* (pdbjjens) Change: node>=18, js-controller>=5 and admin>=6 required
+* (pdbjjens) Change: Removed .npmignore
+* (pdbjjens) New: Updated dependencies
+
 ## 0.0.7 (2024-01-25)
 
 * (pdbjjens) New: json config UI

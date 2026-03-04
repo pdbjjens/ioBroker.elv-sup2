@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "elv-sup2",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "news": {
+      "0.2.3": {
+        "en": "**Changed**: node>=20, js-controller>=7.0.7 and admin>=7.7.22 required\n**Fixed**: update release-script (#434)",
+        "de": "**Changed*: node>=20, js-controller>=7.0.7 und admin>=7.7.22 erforderlich\n**Fixed**: Update-Release-script (#434)",
+        "ru": "**Измененный**: узел>=20, js-контроллер>=7.0.7 и админ>=7.7.22\n**Fixed**: Update Release-Script (#434)",
+        "pt": "**Changed**: nodo>=20, js-controller>=7.07 e admin>=7.7.22 requerido\n**Fixed**: update release-script (#434)",
+        "nl": "**Veranderd**: node>=20, js-controller>=7,07 en admin>=7,7.22 vereist\n**Fixed**: update release-script (#434)",
+        "fr": "**Changed**: noeud>=20, js-controller>=7.0.7 et admin>=7.7.22 requis\n**Fixed**: mise à jour de la version-script (#434)",
+        "it": "**Changed**: node>=20, js-controller>=7.0.7 e admin>=7.22 richiesto\n**Fixed**: update release-script (#434)",
+        "es": "**Changed**: node confianza=20, js-controller confianza=7.0.7 y admin=7.7.22 requerido\n**Fixed**: actualización de la versión-script (#434)",
+        "pl": "* *Zmiana* *: węzeł > = 20, kontroler js- > = 7.0.7 i admin > = 7.7.22 wymagane \n* *Fixed* *: update release- script (# 434) ",
+        "uk": "**Змінено**: вузол>=20, js-controller>=7.0.7 і admin>=7.7.22 потрібно\n**Fixed***: реєстрація релізу (#434)",
+        "zh-cn": "** 变化**:节点20、js控制器7.0.7和管理员7.7.22\n** Fixed**:更新发布标记(# 434)"
+      },
       "0.2.2": {
         "en": "**Fixed:** state roles corrected",
         "de": "**Fixed:** Statusrollen korrigiert",
@@ -80,19 +93,6 @@
         "pl": "Nowy: interfejs konfiguracyjny json\nNowy: Lista dostępnych portów szeregowych w konfiguracji interfejsu",
         "uk": "Новий: json config UI\nНовий: Список доступних серійних портів в config UI",
         "zh-cn": "新建: json 配置 UI\n新建: 配置 UI 中可用的序列端口列表"
-      },
-      "0.0.6": {
-        "en": "Third release",
-        "de": "Dritte Pressemitteilung",
-        "ru": "Третий релиз",
-        "pt": "Terceiro lançamento",
-        "nl": "Derde",
-        "fr": "Troisième libération",
-        "it": "Terza release",
-        "es": "Tercera liberación",
-        "pl": "Trzecie wydanie",
-        "uk": "Третій реліз",
-        "zh-cn": "第三次释放"
       }
     },
     "titleLang": {
