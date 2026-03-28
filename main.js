@@ -11,7 +11,7 @@ const Sup = require('./lib/sup.js');
 const { Queue } = require('async-await-queue');
 
 // Load your modules here, e.g.:
-// const fs = require("fs");
+// const fs = require("node:fs");
 
 let sup = {};
 const objects = {};
