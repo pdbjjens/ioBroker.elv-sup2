@@ -15,7 +15,7 @@ const { Queue } = require('async-await-queue');
 
 let sup = {};
 const objects = {};
-const Debug = false;
+const Debug = false; // set to true for debug output
 const channelId = 'configuration'; // SUP config channel
 let connectTimeout;
 let checkConnectionTimer;
