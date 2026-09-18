@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "elv-sup2",
-    "version": "0.2.3",
+    "version": "0.3.0",
     "news": {
+      "0.3.0": {
+        "en": "Adapter requires node.js >= 22 now\n**Fixed**: i18n directory migrated to short format\n**Fixed**: dependency updates and minor bugfixes",
+        "de": "Adapter benötigt jetzt node.js >= 22\n**Behoben**: Verzeichnis i18n ins Kurzformat migriert\n**Behoben**: Dependency Updates und kleinere Bugfixes",
+        "ru": "Теперь для адаптера требуется файл node.js >= 22\n**Исправлено**: каталог i18n перенесен в короткий формат\n**Исправлено**: обновления зависимостей и незначительные исправления",
+        "pt": "O adaptador exige node.js >= 2\n**Fixo**: pasta i18n migrada para formato curto\n**Corrigido**: dependências e pequenos bugs",
+        "nl": "Voor de adapter is nu node.js >= 22 nodig\n**Opgelost**: de i18n-directory is gemigreerd naar een kort formaat\n**Opgelost**: afhankelijkheidsupdates en kleine bugfixes",
+        "fr": "Adapter nécessite node.js >= 22\n**Corrigé** : le répertoire i18n a été migré au format court\n**Corrigé** : mises à jour de dépendances et bugs mineurs",
+        "it": "Adapter richiede node.js =2 ora\n**Fisso**: cartella i18n migrata in formato breve\n**Fisso**: dipendenze e bugfix minori",
+        "es": "El adaptador necesita node.js >= 22 ahora\n**Fijo**: el directorio i18n migró a formato corto\n**Fijo**: actualizaciones de dependencias y errores menores",
+        "pl": "Adapter wymaga teraz node.js >= 22\n**Naprawione**: katalog i18n został przeniesiony do krótkiego formatu\n**Naprawione**: aktualizacje zależności i drobne poprawki błędów",
+        "uk": "Адаптер вимагає node.js >= 22 зараз\n** Виправлено**: каталог i18n перенесений у короткий формат\n** Виправлено**: оновлення залежностей та незначні виправлення помилок",
+        "zh-cn": "适配器现在需要 node.js >= 22\n**已修复**：i18n 目录迁移到短格式\n**已修复**：依赖项更新和小错误修复"
+      },
       "0.2.3": {
         "en": "**Changed**: node>=20, js-controller>=7.0.7 and admin>=7.7.22 required\n**Fixed**: update release-script (#434)",
         "de": "**Changed*: node>=20, js-controller>=7.0.7 und admin>=7.7.22 erforderlich\n**Fixed**: Update-Release-script (#434)",
@@ -80,19 +93,6 @@
         "pl": "Zmiana: węzeł > = 18, js- contoller > = 5 i admin > = 6 wymagane\nZmiana: Usunięto .npmignore\nNowy: Aktualizacja zależności",
         "uk": "Зміна: вершина>=18, js-contoller>=5 і admin>=6\nЗміна: Видалити .npmignore\nНовий: Оновлені залежності",
         "zh-cn": "更改:节点18、js-contoller%5和管理员6\n更改: 删除 .npmignore\n新建:更新的依赖关系"
-      },
-      "0.0.7": {
-        "en": "New: json config UI\nNew: List of available serial ports in config UI",
-        "de": "Neu: json config UI\nNeu: Liste der verfügbaren seriellen Ports in config UI",
-        "ru": "Новый: json config UI\nНовый: Список доступных серийных портов в пользовательском интерфейсе конфигурации",
-        "pt": "Novo: json config UI\nNovo: Lista de portas seriais disponíveis em UI de configuração",
-        "nl": "Nieuw: json config UI\nNieuw: Lijst van beschikbare seriële poorten in configuratie-UI",
-        "fr": "Nouveau : json config UI\nNouveau: Liste des ports série disponibles dans config UI",
-        "it": "Nuovo: json config UI\nNuovo: Elenco delle porte seriali disponibili in config UI",
-        "es": "Nuevo: json config UI\nNuevo: Lista de puertos serie disponibles en config UI",
-        "pl": "Nowy: interfejs konfiguracyjny json\nNowy: Lista dostępnych portów szeregowych w konfiguracji interfejsu",
-        "uk": "Новий: json config UI\nНовий: Список доступних серійних портів в config UI",
-        "zh-cn": "新建: json 配置 UI\n新建: 配置 UI 中可用的序列端口列表"
       }
     },
     "titleLang": {

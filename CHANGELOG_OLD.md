@@ -1,4 +1,11 @@
 # Older changes
+## 0.1.1 (2024-11-24) - 2025H1 maintenance release
+
+* (pdbjjens) New: Tested with node.js 22
+* (pdbjjens) Fix: Responsive Design tweaks
+* (pdbjjens) New: Updated dependencies
+
+
 ## 0.1.0 (2024-08-29) - 2024H2 maintenance release
 
 * (pdbjjens) Change: node>=18, js-controller>=5 and admin>=6 required
