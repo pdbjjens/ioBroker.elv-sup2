@@ -1,0 +1,9 @@
+{
+    "Basic configuration for SUP2 access": "Grundkonfiguration für SUP2-Zugriff",
+    "Baudrate": "Baudrate",
+    "Default: 19200": "Standard: 19200",
+    "Format: /dev/ttyUSBserial or COMx": "Format: /dev/ttyUSBserial oder COMx",
+    "Select Baudrate of Serial Port (Do not change)": "Baudrate des seriellen Ports auswählen (nicht ändern)",
+    "Select the Serial Port Id. For manual input stop the adapter": "Wählen Sie die ID des seriellen Ports aus. Für die manuelle Eingabe schalten Sie den Adapter aus",
+    "Serial Port Id": "Serielle Port-ID"
+}

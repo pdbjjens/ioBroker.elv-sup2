@@ -1,0 +1,9 @@
+{
+    "Basic configuration for SUP2 access": "Базовая конфигурация для доступа SUP2",
+    "Baudrate": "Скорость передачи данных",
+    "Default: 19200": "По умолчанию: 19200",
+    "Format: /dev/ttyUSBserial or COMx": "Формат: /dev/ttyUSBserial или COMx.",
+    "Select Baudrate of Serial Port (Do not change)": "Выберите скорость последовательного порта (не меняйте)",
+    "Select the Serial Port Id. For manual input stop the adapter": "Выберите идентификатор последовательного порта. Для ручного ввода остановите адаптер",
+    "Serial Port Id": "Идентификатор последовательного порта"
+}

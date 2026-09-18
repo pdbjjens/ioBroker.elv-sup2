@@ -74,7 +74,7 @@ const serialformat = /^(COM|com)[0-9][0-9]?$|^\/dev\/tty.*$/;
 
 class ElvSup2 extends utils.Adapter {
     /**
-     * @param {Partial<utils.AdapterOptions>} [options={}]
+     * @param {Partial<utils.AdapterOptions>} [options] Adapter configuration options.
      */
     constructor(options) {
         super({
@@ -282,7 +282,7 @@ class ElvSup2 extends utils.Adapter {
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      *
-     * @param {() => void} callback
+     * @param {() => void} callback Callback to signal completion of adapter shutdown.
      */
     async onUnload(callback) {
         connectTimeout && this.clearInterval(connectTimeout);
@@ -327,8 +327,8 @@ class ElvSup2 extends utils.Adapter {
     /**
      * Is called if a subscribed state changes
      *
-     * @param {string} id
-     * @param {ioBroker.State | null | undefined} state
+     * @param {string} id - The state ID that changed.
+     * @param {ioBroker.State | null | undefined} state - The new state value.
      */
     async onStateChange(id, state) {
         try {
@@ -1028,7 +1028,7 @@ class ElvSup2 extends utils.Adapter {
 if (require.main !== module) {
     // Export the constructor in compact mode
     /**
-     * @param {Partial<utils.AdapterOptions>} [options={}]
+     * @param {Partial<utils.AdapterOptions>} [options] Adapter options for initialization.
      */
     module.exports = options => new ElvSup2(options);
 } else {

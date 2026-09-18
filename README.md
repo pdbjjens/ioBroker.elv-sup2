@@ -24,8 +24,11 @@ The format should be e.g.: /dev/ttyUSBx on Linux- or COMx on Windows-based ioBro
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
-- (copilot) Adapter requires node.js >= 22 now
+### **WORK IN PROGRESS** - 2026H2 maintenance release
+
+* (copilot) Adapter requires node.js >= 22 now
+* (pdbjjens) **Fixed**: i18n directory migrated to short format
+* (pdbjjens) **Fixed**: dependency updates and minor bugfixes
 
 ### 0.2.3 (2026-03-04) - 2026H1 maintenance release
 
